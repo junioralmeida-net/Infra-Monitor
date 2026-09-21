@@ -91,7 +91,7 @@ variables() {
 # `source <(curl ...)` hides the download exit code, so a failed fetch would
 # silently source an empty stream and leave the helpers undefined.
 # Self-host base URL (override via env). Local clone: set COMMUNITY_SCRIPTS_ROOT.
-COMMUNITY_SCRIPTS_URL="${COMMUNITY_SCRIPTS_URL:-https://raw.githubusercontent.com/seu-org/Infra-Monitor/main}"
+COMMUNITY_SCRIPTS_URL="${COMMUNITY_SCRIPTS_URL:-https://raw.githubusercontent.com/junioralmeida-net/Infra-Monitor/main}"
 if [[ -z "${COMMUNITY_SCRIPTS_ROOT:-}" && -n "${BASH_SOURCE[0]:-}" && -f "${BASH_SOURCE[0]}" ]]; then
   _bf_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   [[ -f "${_bf_dir}/build.func" ]] && COMMUNITY_SCRIPTS_ROOT="$(cd "${_bf_dir}/.." && pwd)"

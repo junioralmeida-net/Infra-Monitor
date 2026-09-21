@@ -15,7 +15,7 @@
 [[ -n "${_CORE_FUNC_LOADED:-}" ]] && return
 _CORE_FUNC_LOADED=1
 
-COMMUNITY_SCRIPTS_URL="${COMMUNITY_SCRIPTS_URL:-https://raw.githubusercontent.com/seu-org/Infra-Monitor/main}"
+COMMUNITY_SCRIPTS_URL="${COMMUNITY_SCRIPTS_URL:-https://raw.githubusercontent.com/junioralmeida-net/Infra-Monitor/main}"
 export COMMUNITY_SCRIPTS_URL
 
 if [[ -z "${HOME:-}" ]]; then

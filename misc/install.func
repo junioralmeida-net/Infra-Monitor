@@ -48,7 +48,7 @@ _bootstrap_die() {
   exit 115
 }
 
-COMMUNITY_SCRIPTS_URL="${COMMUNITY_SCRIPTS_URL:-https://raw.githubusercontent.com/seu-org/Infra-Monitor/main}"
+COMMUNITY_SCRIPTS_URL="${COMMUNITY_SCRIPTS_URL:-https://raw.githubusercontent.com/junioralmeida-net/Infra-Monitor/main}"
 export COMMUNITY_SCRIPTS_URL
 
 _bootstrap_source() {
@@ -552,4 +552,28 @@ EOF
     chmod 600 /root/.ssh/authorized_keys
   fi
   post_progress_to_api
+}
+
+# ------------------------------------------------------------------------------
+# run_os_setup()
+#
+# - Dispatches to setup_deb_based() or setup_alpine() defined by the app install script
+# - Detects Alpine via /etc/alpine-release or PCT_OSTYPE/var_os
+# ------------------------------------------------------------------------------
+run_os_setup() {
+  if [[ -f /etc/alpine-release ]] || [[ "${PCT_OSTYPE:-}" == "alpine" ]] || [[ "${var_os:-}" == "alpine" ]]; then
+    if declare -f setup_alpine >/dev/null 2>&1; then
+      setup_alpine
+    else
+      msg_error "setup_alpine() is not defined in the install script"
+      exit 127
+    fi
+  else
+    if declare -f setup_deb_based >/dev/null 2>&1; then
+      setup_deb_based
+    else
+      msg_error "setup_deb_based() is not defined in the install script"
+      exit 127
+    fi
+  fi
 }

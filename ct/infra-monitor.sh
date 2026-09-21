@@ -4,8 +4,8 @@
 # Source packages: https://github.com/rustdesk/rustdesk-server | https://github.com/lejianwen/rustdesk-api
 
 # Override when hosting this fork on GitHub/Gitea/raw HTTP:
-#   export COMMUNITY_SCRIPTS_URL="https://raw.githubusercontent.com/<seu-org>/Infra-Monitor/main"
-export COMMUNITY_SCRIPTS_URL="${COMMUNITY_SCRIPTS_URL:-https://raw.githubusercontent.com/seu-org/Infra-Monitor/main}"
+#   export COMMUNITY_SCRIPTS_URL="https://raw.githubusercontent.com/junioralmeida-net/Infra-Monitor/main"
+export COMMUNITY_SCRIPTS_URL="${COMMUNITY_SCRIPTS_URL:-https://raw.githubusercontent.com/junioralmeida-net/Infra-Monitor/main}"
 _script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export COMMUNITY_SCRIPTS_ROOT="${COMMUNITY_SCRIPTS_ROOT:-$(cd "${_script_dir}/.." && pwd)}"
 

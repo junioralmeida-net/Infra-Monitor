@@ -127,6 +127,17 @@ EOF
   rm -f "$temp_file1" "$temp_file2"
 }
 
+# Fallback if install.func on the remote is outdated (missing run_os_setup)
+if ! declare -f run_os_setup >/dev/null 2>&1; then
+  run_os_setup() {
+    if [[ -f /etc/alpine-release ]] || [[ "${PCT_OSTYPE:-}" == "alpine" ]] || [[ "${var_os:-}" == "alpine" ]]; then
+      setup_alpine
+    else
+      setup_deb_based
+    fi
+  }
+fi
+
 run_os_setup
 
 motd_ssh
