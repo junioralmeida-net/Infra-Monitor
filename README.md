@@ -106,8 +106,10 @@ pct exec <CTID> -- update
 | [`tools/infra-monitor-update.sh`](tools/infra-monitor-update.sh) | Update a partir do host Proxmox |
 | [`tools/infra-monitor-update-ct.sh`](tools/infra-monitor-update-ct.sh) | Update de dentro do LXC |
 | [`ct/headers/infra-monitor`](ct/headers/infra-monitor) | ASCII art no terminal |
-| [`misc/images/LOGO1.png`](misc/images/LOGO1.png) | Logo principal (NETWORK) |
+| [`misc/images/LOGO1.png`](misc/images/LOGO1.png) | Logo principal (NETWORK, fundo claro) |
+| [`misc/images/logo-network-on-dark.svg`](misc/images/logo-network-on-dark.svg) | Lockup para fundos escuros |
 | [`misc/images/IdentidadeVisual.png`](misc/images/IdentidadeVisual.png) | Referência de identidade |
+| [`misc/brand/preview.html`](misc/brand/preview.html) | Preview da identidade aplicada |
 
 O instalador original `ct/rustdeskserver.sh` permanece no repositório como legado.
 
@@ -121,18 +123,21 @@ Usada para baixar `install/`, `ct/headers/`, helpers em `misc/` e o logo no MOTD
 
 ---
 
-## Identidade visual (cores)
+## Identidade visual
 
-Tokens de [`PASTA_BASE/design-system-ref-agentic-builder.html`](PASTA_BASE/design-system-ref-agentic-builder.html) / [`misc/images/brand-tokens.css`](misc/images/brand-tokens.css):
+Marca **NETWORK Informática** — [`PASTA_BASE/IdentidadeVisual.png`](PASTA_BASE/IdentidadeVisual.png) e tokens em [`misc/images/brand-tokens.css`](misc/images/brand-tokens.css) (superfícies do [`design-system-ref-agentic-builder.html`](PASTA_BASE/design-system-ref-agentic-builder.html)).
 
-| Token | Hex | Uso no instalador |
-| ----- | --- | ----------------- |
-| brand-500 | `#D97757` | Destaques / avisos (YW) |
-| brand-600 | `#D0572F` | Accent forte (YWB) |
+| Token | Hex | Uso |
+| ----- | --- | --- |
+| ink | `#1A1A1A` | Preto da marca / fundo das notas LXC |
+| brand / brand-600 | `#D0572F` | Laranja oficial (barra de acento, YWB, CTAs) |
+| paper | `#F5F5F5` | Off-white / texto principal |
+| brand-500 | `#D97757` | Destaques e avisos (YW) |
 | success | `#29E0A9` | OK / sucesso (GN) |
 | info | `#4B73FF` | Info / links (BL) |
 | danger | `#C63131` | Erros (RD) |
-| bg | `#121212` | Fundo descrição LXC |
+
+Tipografia: **Outfit** (marca / títulos) e **Inter** (corpo). Linguagem visual: escuro, geométrico, acento terracota — sem laranja saturado fora da paleta.
 
 ---
 

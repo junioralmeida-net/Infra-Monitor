@@ -1,17 +1,53 @@
-/* Infra-Monitor — tokens from design-system-ref-agentic-builder.html */
+/* Infra-Monitor — NETWORK Informática
+   Fonte: PASTA_BASE/IdentidadeVisual.png
+   Superfícies/semântica: PASTA_BASE/design-system-ref-agentic-builder.html
+*/
 :root {
+  /* Identidade oficial */
+  --ink: #1A1A1A;
+  --brand: #D0572F;
+  --paper: #F5F5F5;
+
+  /* Marca (design system) */
   --brand-500: #D97757;
   --brand-600: #D0572F;
   --brand-deep: #7D422E;
-  --bg: #121212;
+
+  /* Superfícies dark */
+  --bg: #1A1A1A;
   --surface-1: #191917;
   --surface-2: #262624;
-  --fg-1: #F3F3F3;
+
+  /* Texto */
+  --fg-1: #F5F5F5;
   --fg-2: #D8D8D8;
   --fg-3: #D7D7D7;
   --fg-muted: #616161;
+
+  /* Linhas */
   --border: #777777;
+  --border-strong: #777777;
+  --hairline: rgba(245, 245, 245, 0.10);
+
+  /* Semântica */
   --success: #29E0A9;
   --danger: #C63131;
   --info: #4B73FF;
+
+  /* Tipo: Outfit (marca) + Inter (corpo) */
+  --font-display: "Outfit", "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "Roboto Mono", ui-monospace, monospace;
+  --tracking-tight: -0.02em;
+
+  /* Forma */
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 100px;
+  --gx-cta: linear-gradient(#D97757, #D0572F);
+  --gradient-cta: linear-gradient(#D97757, #D0572F);
+  --gradient-urgency-pill: radial-gradient(#7D422E, #1A1A1A);
+  --gradient-plan-card: linear-gradient(#262624, #181817);
+  --shadow-plan: 0 15px 24px rgba(17, 4, 54, 0.2);
+  --accent-bar: #D0572F;
 }

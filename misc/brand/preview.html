@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Infra-Monitor · NETWORK Informática</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../images/brand-tokens.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; background: var(--bg); color: var(--fg-1); font-family: var(--font-sans); }
+    .accent { height: 4px; background: var(--gradient-cta); }
+    .wrap { max-width: 880px; margin: 0 auto; padding: 48px 24px 72px; }
+    .kicker { font-family: var(--font-sans); color: var(--fg-muted); letter-spacing: 0.12em; text-transform: uppercase; font-size: 12px; margin-bottom: 12px; }
+    h1 { font-family: var(--font-display); font-weight: 800; letter-spacing: var(--tracking-tight); font-size: 40px; line-height: 1.1; }
+    .lede { color: var(--fg-2); margin: 16px 0 40px; max-width: 56ch; line-height: 1.55; }
+    .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 40px; }
+    .swatch { background: var(--surface-1); border: 1px solid var(--hairline); border-radius: var(--radius-md); overflow: hidden; }
+    .swatch i { display: block; height: 72px; }
+    .swatch p { padding: 10px 12px 14px; font-size: 12px; color: var(--fg-2); }
+    .swatch b { display: block; color: var(--fg-1); font-family: var(--font-display); margin-bottom: 2px; }
+    .card {
+      background: var(--surface-1);
+      border: 1px solid #262624;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .note { text-align: center; padding: 28px 20px 24px; }
+    .note img { width: 188px; height: auto; }
+    .note h2 { font-family: var(--font-display); font-size: 22px; letter-spacing: var(--tracking-tight); margin: 18px 0 4px; }
+    .note .sub { color: var(--fg-muted); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px; }
+    .note a { color: var(--brand); text-decoration: none; margin: 0 10px; }
+    .note .docs { color: var(--info); }
+    .note .iss { color: var(--danger); }
+  </style>
+</head>
+<body>
+  <div class="accent"></div>
+  <div class="wrap">
+    <p class="kicker">NETWORK Informática</p>
+    <h1>Infra-Monitor</h1>
+    <p class="lede">Identidade aplicada: preto <b>#1A1A1A</b>, laranja <b>#D0572F</b>, off-white <b>#F5F5F5</b>. Outfit nos títulos, Inter no corpo. Barra de acento em gradiente da marca — sem laranja saturado fora da paleta.</p>
+
+    <div class="swatches">
+      <div class="swatch"><i style="background:#1A1A1A;border-bottom:1px solid #333;"></i><p><b>ink</b>#1A1A1A</p></div>
+      <div class="swatch"><i style="background:#D0572F;"></i><p><b>brand</b>#D0572F</p></div>
+      <div class="swatch"><i style="background:#F5F5F5;"></i><p><b>paper</b>#F5F5F5</p></div>
+      <div class="swatch"><i style="background:#D97757;"></i><p><b>brand-500</b>#D97757</p></div>
+      <div class="swatch"><i style="background:#29E0A9;"></i><p><b>success</b>#29E0A9</p></div>
+      <div class="swatch"><i style="background:#C63131;"></i><p><b>danger</b>#C63131</p></div>
+    </div>
+
+    <div class="card">
+      <div class="accent"></div>
+      <div class="note">
+        <div style="display:inline-block;background:#F5F5F5;border-radius:8px;padding:12px 16px;">
+          <img src="../images/LOGO1.png" alt="NETWORK Informática" style="width:188px;height:auto;display:block;">
+        </div>
+        <h2>Infra-Monitor LXC</h2>
+        <p class="sub">NETWORK Informática</p>
+        <a href="https://github.com/junioralmeida-net/Infra-Monitor">GitHub</a>
+        <a class="docs" href="https://github.com/junioralmeida-net/Infra-Monitor#readme">Docs</a>
+        <a class="iss" href="https://github.com/junioralmeida-net/Infra-Monitor/issues">Issues</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

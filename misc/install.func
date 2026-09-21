@@ -492,7 +492,7 @@ motd_ssh() {
   echo "[ -t 1 ] || return 0" >"$PROFILE_FILE"
   echo "echo -e \"\"" >>"$PROFILE_FILE"
   echo -e "echo -e \"${BOLD}${APPLICATION} LXC Container${CL}"\" >>"$PROFILE_FILE"
-  echo -e "echo -e \"${TAB}${GATEWAY}${YW} Provided by: ${GN}community-scripts ORG ${YW}| GitHub: ${GN}https://github.com/community-scripts/ProxmoxVE${CL}\"" >>"$PROFILE_FILE"
+  echo -e "echo -e \"${TAB}${GATEWAY}${YW} NETWORK Informática ${CL}${MUTED:-}·${CL} ${GN}Infra-Monitor${CL} ${YW}| GitHub: ${GN}https://github.com/junioralmeida-net/Infra-Monitor${CL}\"" >>"$PROFILE_FILE"
   echo "echo \"\"" >>"$PROFILE_FILE"
   cat <<EOF >>"$PROFILE_FILE"
 os_display="Unknown OS"

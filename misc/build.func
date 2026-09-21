@@ -1030,7 +1030,7 @@ resolve_os_version() {
     done < <(printf '%s\n' "${versions[@]}" | sort -rV)
 
     local choice
-    choice=$(whiptail --backtitle "Proxmox VE Helper Scripts" \
+    choice=$(whiptail --backtitle "Infra-Monitor · NETWORK" \
       --title "OS VERSION NOT AVAILABLE" \
       --ok-button "Use" --cancel-button "Exit" \
       --menu "\n${ostype^} ${want} is not available on this Proxmox host.\n\nSelect the version to use instead:" \
@@ -1937,7 +1937,7 @@ maybe_offer_save_app_defaults() {
 
   # 1) if no file → offer to create
   if [[ ! -f "$app_vars_path" ]]; then
-    if whiptail --backtitle "Proxmox VE Helper Scripts" \
+    if whiptail --backtitle "Infra-Monitor · NETWORK" \
       --yesno "Save these advanced settings as defaults for ${APP}?\n\nThis will create:\n${app_vars_path}" 12 72; then
       mkdir -p "$(dirname "$app_vars_path")"
       /usr/bin/install -m 0644 "$new_tmp" "$app_vars_path"
@@ -1962,7 +1962,7 @@ maybe_offer_save_app_defaults() {
 
   while true; do
     local sel
-    sel="$(whiptail --backtitle "Proxmox VE Helper Scripts" \
+    sel="$(whiptail --backtitle "Infra-Monitor · NETWORK" \
       --title "APP DEFAULTS – ${APP}" \
       --menu "Differences detected. What do you want to do?" 20 78 10 \
       "Update Defaults" "Write new values to ${app_vars_file}" \
@@ -1983,7 +1983,7 @@ maybe_offer_save_app_defaults() {
       break
       ;;
     "View Diff")
-      whiptail --backtitle "Proxmox VE Helper Scripts" \
+      whiptail --backtitle "Infra-Monitor · NETWORK" \
         --title "Diff – ${APP}" \
         --scrolltext --textbox "$diff_tmp" 25 100
       ;;
@@ -2176,7 +2176,7 @@ advanced_settings() {
         default_off="ON"
       }
 
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "CONTAINER TYPE" \
         --ok-button "Next" --cancel-button "Exit" \
         --radiolist "\nChoose container type:\n\nUse SPACE to select, ENTER to confirm." 14 58 2 \
@@ -2194,7 +2194,7 @@ advanced_settings() {
     # STEP 2: Root Password
     # ═══════════════════════════════════════════════════════════════════════════
     2)
-      if PW1=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if PW1=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "ROOT PASSWORD" \
         --ok-button "Next" --cancel-button "Back" \
         --passwordbox "\nSet Root Password (needed for root ssh access)\n\nLeave blank for automatic login (no password)" 12 58 \
@@ -2219,7 +2219,7 @@ advanced_settings() {
             continue
           fi
           # Verify password
-          if PW2=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+          if PW2=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
             --title "PASSWORD VERIFICATION" \
             --ok-button "Confirm" --cancel-button "Back" \
             --passwordbox "\nVerify Root Password" 10 58 \
@@ -2248,7 +2248,7 @@ advanced_settings() {
     # STEP 3: Container ID
     # ═══════════════════════════════════════════════════════════════════════════
     3)
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "CONTAINER ID" \
         --ok-button "Next" --cancel-button "Back" \
         --inputbox "\nSet Container ID" 10 58 "$_ct_id" \
@@ -2257,13 +2257,13 @@ advanced_settings() {
 
         # Validate that ID is numeric
         if ! [[ "$input_id" =~ ^[0-9]+$ ]]; then
-          whiptail --backtitle "Proxmox VE Helper Scripts" --title "Invalid ID" --msgbox "Container ID must be numeric." 8 58
+          whiptail --backtitle "Infra-Monitor · NETWORK" --title "Invalid ID" --msgbox "Container ID must be numeric." 8 58
           continue
         fi
 
         # Check if ID is already in use
         if ! validate_container_id "$input_id"; then
-          if whiptail --backtitle "Proxmox VE Helper Scripts" --title "ID Already In Use" \
+          if whiptail --backtitle "Infra-Monitor · NETWORK" --title "ID Already In Use" \
             --yesno "Container/VM ID $input_id is already in use.\n\nWould you like to use the next available ID ($(get_valid_container_id "$input_id"))?" 10 58; then
             _ct_id=$(get_valid_container_id "$input_id")
           else
@@ -2282,7 +2282,7 @@ advanced_settings() {
     # STEP 4: Hostname
     # ═══════════════════════════════════════════════════════════════════════════
     4)
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "HOSTNAME" \
         --ok-button "Next" --cancel-button "Back" \
         --inputbox "\nSet Hostname (or FQDN, e.g. host.example.com)" 10 58 "$_hostname" \
@@ -2305,7 +2305,7 @@ advanced_settings() {
     # STEP 5: Disk Size
     # ═══════════════════════════════════════════════════════════════════════════
     5)
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "DISK SIZE" \
         --ok-button "Next" --cancel-button "Back" \
         --inputbox "\nSet Disk Size in GB" 10 58 "$_disk_size" \
@@ -2326,7 +2326,7 @@ advanced_settings() {
     # STEP 6: CPU Cores
     # ═══════════════════════════════════════════════════════════════════════════
     6)
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "CPU CORES" \
         --ok-button "Next" --cancel-button "Back" \
         --inputbox "\nAllocate CPU Cores" 10 58 "$_core_count" \
@@ -2347,7 +2347,7 @@ advanced_settings() {
     # STEP 7: RAM Size
     # ═══════════════════════════════════════════════════════════════════════════
     7)
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "RAM SIZE" \
         --ok-button "Next" --cancel-button "Back" \
         --inputbox "\nAllocate RAM in MiB" 10 58 "$_ram_size" \
@@ -2379,7 +2379,7 @@ advanced_settings() {
           exit 116
         fi
       else
-        if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+        if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
           --title "NETWORK BRIDGE" \
           --ok-button "Next" --cancel-button "Back" \
           --menu "\nSelect network bridge:" 16 58 6 \
@@ -2416,7 +2416,7 @@ advanced_settings() {
     # STEP 9: IPv4 Configuration
     # ═══════════════════════════════════════════════════════════════════════════
     9)
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "IPv4 CONFIGURATION" \
         --ok-button "Next" --cancel-button "Back" \
         --menu "\nSelect IPv4 Address Assignment:" 16 65 3 \
@@ -2428,7 +2428,7 @@ advanced_settings() {
         if [[ "$result" == "static" ]]; then
           # Get static IP
           local static_ip
-          if static_ip=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+          if static_ip=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
             --title "STATIC IPv4 ADDRESS" \
             --ok-button "Next" --cancel-button "Back" \
             --inputbox "\nEnter Static IPv4 CIDR Address\n(e.g. 192.168.1.100/24)" 12 58 "" \
@@ -2436,7 +2436,7 @@ advanced_settings() {
             if validate_ip_address "$static_ip"; then
               # Get gateway
               local gateway_ip
-              if gateway_ip=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+              if gateway_ip=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
                 --title "GATEWAY IP" \
                 --ok-button "Next" --cancel-button "Back" \
                 --inputbox "\nEnter Gateway IP address" 10 58 "" \
@@ -2461,7 +2461,7 @@ advanced_settings() {
         elif [[ "$result" == "range" ]]; then
           # IP Range Scan
           local ip_range
-          if ip_range=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+          if ip_range=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
             --title "IP RANGE SCAN" \
             --ok-button "Scan" --cancel-button "Back" \
             --inputbox "\nEnter IP range to scan for free address\n(e.g. 192.168.1.100/24-192.168.1.200/24)" 12 65 "" \
@@ -2474,7 +2474,7 @@ advanced_settings() {
               if resolve_ip_from_range "$ip_range"; then
                 # Get gateway
                 local gateway_ip
-                if gateway_ip=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+                if gateway_ip=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
                   --title "GATEWAY IP" \
                   --ok-button "Next" --cancel-button "Back" \
                   --inputbox "\nFound free IP: $NET_RESOLVED\n\nEnter Gateway IP address" 12 58 "" \
@@ -2513,7 +2513,7 @@ advanced_settings() {
     # STEP 10: IPv6 Configuration
     # ═══════════════════════════════════════════════════════════════════════════
     10)
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "IPv6 CONFIGURATION" \
         --ok-button "Next" --cancel-button "Back" \
         --menu "\nSelect IPv6 Address Management:" 16 70 5 \
@@ -2528,7 +2528,7 @@ advanced_settings() {
         case "$result" in
         static)
           local ipv6_addr
-          if ipv6_addr=$(whiptail --backtitle "Proxmox VE Helper Scripts" \
+          if ipv6_addr=$(whiptail --backtitle "Infra-Monitor · NETWORK" \
             --title "STATIC IPv6 ADDRESS" \
             --inputbox "\nEnter IPv6 CIDR address\n(e.g. 2001:db8::1/64)" 12 58 "" \
             3>&1 1>&2 2>&3); then
@@ -2538,7 +2538,7 @@ advanced_settings() {
               local ipv6_gw_valid=false
               while [[ "$ipv6_gw_valid" == "false" ]]; do
                 local ipv6_gw
-                ipv6_gw=$(whiptail --backtitle "Proxmox VE Helper Scripts" \
+                ipv6_gw=$(whiptail --backtitle "Infra-Monitor · NETWORK" \
                   --title "IPv6 GATEWAY" \
                   --inputbox "\nEnter IPv6 gateway (optional, leave blank for none)" 10 58 "" \
                   3>&1 1>&2 2>&3) || true
@@ -2588,7 +2588,7 @@ advanced_settings() {
     # STEP 11: MTU Size
     # ═══════════════════════════════════════════════════════════════════════════
     11)
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "MTU SIZE" \
         --ok-button "Next" --cancel-button "Back" \
         --inputbox "\nSet Interface MTU Size\n(leave blank for default 1500, common values: 1500, 9000)" 12 62 "" \
@@ -2608,7 +2608,7 @@ advanced_settings() {
     # STEP 12: DNS Search Domain
     # ═══════════════════════════════════════════════════════════════════════════
     12)
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "DNS SEARCH DOMAIN" \
         --ok-button "Next" --cancel-button "Back" \
         --inputbox "\nSet DNS Search Domain\n(leave blank to use host setting)" 12 58 "" \
@@ -2624,7 +2624,7 @@ advanced_settings() {
     # STEP 13: DNS Server
     # ═══════════════════════════════════════════════════════════════════════════
     13)
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "DNS SERVER" \
         --ok-button "Next" --cancel-button "Back" \
         --inputbox "\nSet DNS Server IP\n(leave blank to use host setting)" 12 58 "" \
@@ -2640,7 +2640,7 @@ advanced_settings() {
     # STEP 14: MAC Address
     # ═══════════════════════════════════════════════════════════════════════════
     14)
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "MAC ADDRESS" \
         --ok-button "Next" --cancel-button "Back" \
         --inputbox "\nSet MAC Address\n(leave blank for auto-generated, format: XX:XX:XX:XX:XX:XX)" 12 62 "" \
@@ -2660,7 +2660,7 @@ advanced_settings() {
     # STEP 15: VLAN Tag
     # ═══════════════════════════════════════════════════════════════════════════
     15)
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "VLAN TAG" \
         --ok-button "Next" --cancel-button "Back" \
         --inputbox "\nSet VLAN Tag (1-4094)\n(leave blank for no VLAN)" 12 58 "" \
@@ -2680,7 +2680,7 @@ advanced_settings() {
     # STEP 16: Tags
     # ═══════════════════════════════════════════════════════════════════════════
     16)
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "CONTAINER TAGS" \
         --ok-button "Next" --cancel-button "Back" \
         --inputbox "\nSet Custom Tags (semicolon-separated)\n(alphanumeric, hyphens, underscores only)" 12 58 "$_tags" \
@@ -2714,7 +2714,7 @@ advanced_settings() {
       local fuse_default_flag="--defaultno"
       [[ "$_enable_fuse" == "yes" || "$_enable_fuse" == "1" ]] && fuse_default_flag=""
 
-      if whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "FUSE SUPPORT" \
         --ok-button "Next" --cancel-button "Back" \
         $fuse_default_flag \
@@ -2738,7 +2738,7 @@ advanced_settings() {
       local tun_default_flag="--defaultno"
       [[ "$_enable_tun" == "yes" || "$_enable_tun" == "1" ]] && tun_default_flag=""
 
-      if whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "TUN/TAP SUPPORT" \
         --ok-button "Next" --cancel-button "Back" \
         $tun_default_flag \
@@ -2762,7 +2762,7 @@ advanced_settings() {
       local nesting_default_flag=""
       [[ "$_enable_nesting" == "0" || "$_enable_nesting" == "no" ]] && nesting_default_flag="--defaultno"
 
-      if whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "NESTING SUPPORT" \
         --ok-button "Next" --cancel-button "Back" \
         $nesting_default_flag \
@@ -2773,7 +2773,7 @@ advanced_settings() {
           _enable_nesting="0"
           # Warn about potential issues with systemd-based OS when nesting is disabled
           if [[ "$var_os" != "alpine" ]]; then
-            whiptail --backtitle "Proxmox VE Helper Scripts" \
+            whiptail --backtitle "Infra-Monitor · NETWORK" \
               --title "⚠️ NESTING WARNING" \
               --msgbox "Modern systemd-based distributions (Debian 13+, Ubuntu 24.04+, etc.) may require nesting to be enabled for proper operation.\n\nWithout nesting, the container may start in a degraded state with failing services (error 243/CREDENTIALS).\n\nIf you experience issues, enable nesting in the container options." 14 68
           fi
@@ -2792,7 +2792,7 @@ advanced_settings() {
       local gpu_default_flag="--defaultno"
       [[ "$_enable_gpu" == "yes" ]] && gpu_default_flag=""
 
-      if whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "GPU PASSTHROUGH" \
         --ok-button "Next" --cancel-button "Back" \
         $gpu_default_flag \
@@ -2823,7 +2823,7 @@ advanced_settings() {
       local keyctl_default_flag="--defaultno"
       [[ "$_enable_keyctl" == "1" ]] && keyctl_default_flag=""
 
-      if whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "KEYCTL SUPPORT" \
         --ok-button "Next" --cancel-button "Back" \
         $keyctl_default_flag \
@@ -2847,14 +2847,14 @@ advanced_settings() {
       local apt_cacher_default_flag="--defaultno"
       [[ "$_apt_cacher" == "yes" ]] && apt_cacher_default_flag=""
 
-      if whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "APT CACHER PROXY" \
         --ok-button "Next" --cancel-button "Back" \
         $apt_cacher_default_flag \
         --yesno "\nUse APT Cacher-NG proxy?\n\nSpeeds up package downloads by caching them locally.\nRequires apt-cacher-ng running on your network.\n\n(App default: ${var_apt_cacher:-no})" 14 62; then
         _apt_cacher="yes"
         # Ask for IP if enabled
-        if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+        if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
           --title "APT CACHER IP" \
           --inputbox "\nEnter APT Cacher-NG IP or URL:\n(e.g. 192.168.1.10, http://host, https://host:443)" 12 62 "$_apt_cacher_ip" \
           3>&1 1>&2 2>&3); then
@@ -2879,18 +2879,18 @@ advanced_settings() {
       local http_proxy_default_flag="--defaultno"
       [[ -n "$_http_proxy" ]] && http_proxy_default_flag=""
 
-      if whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "HTTP/HTTPS PROXY" \
         --ok-button "Next" --cancel-button "Back" \
         $http_proxy_default_flag \
         --yesno "\nUse HTTP/HTTPS proxy?\n\nRequired when internet access must go through a proxy server.\n(e.g. corporate networks)\n\n(App default: ${var_http_proxy:-none})" 14 62; then
-        if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+        if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
           --title "HTTP PROXY URL" \
           --inputbox "\nEnter HTTP proxy URL:\n(e.g. http://proxy.local:8080)" 12 62 "$_http_proxy" \
           3>&1 1>&2 2>&3); then
           _http_proxy="$result"
           local _no_proxy_default="${_http_no_proxy:-localhost,127.0.0.1,.local}"
-          if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+          if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
             --title "NO_PROXY EXCEPTIONS" \
             --inputbox "\nEnter NO_PROXY exceptions (comma-separated):\nLeave empty for defaults." 12 62 "$_no_proxy_default" \
             3>&1 1>&2 2>&3); then
@@ -2930,7 +2930,7 @@ advanced_settings() {
 
       local host_ca_default_flag="--defaultno"
       [[ "$_inherit_host_ca" == "yes" ]] && host_ca_default_flag=""
-      if whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "HOST CA INHERITANCE" \
         --ok-button "Next" --cancel-button "Back" \
         $host_ca_default_flag \
@@ -2954,7 +2954,7 @@ advanced_settings() {
       local tz_hint="$_ct_timezone"
       [[ -z "$tz_hint" ]] && tz_hint="(empty - will use host timezone)"
 
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "CONTAINER TIMEZONE" \
         --ok-button "Next" --cancel-button "Back" \
         --inputbox "\nSet container timezone.\n\nExamples: Europe/Berlin, America/New_York, Asia/Tokyo\n\nHost timezone: ${_host_timezone:-unknown}\n\nLeave empty to inherit from host." 16 62 "$_ct_timezone" \
@@ -2979,7 +2979,7 @@ advanced_settings() {
       local protect_default_flag="--defaultno"
       [[ "$_protect_ct" == "yes" || "$_protect_ct" == "1" ]] && protect_default_flag=""
 
-      if whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "CONTAINER PROTECTION" \
         --ok-button "Next" --cancel-button "Back" \
         $protect_default_flag \
@@ -3003,7 +3003,7 @@ advanced_settings() {
       local mknod_default_flag="--defaultno"
       [[ "$_enable_mknod" == "1" ]] && mknod_default_flag=""
 
-      if whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "DEVICE NODE CREATION" \
         --ok-button "Next" --cancel-button "Back" \
         $mknod_default_flag \
@@ -3027,7 +3027,7 @@ advanced_settings() {
       local mount_hint=""
       [[ -n "$_mount_fs" ]] && mount_hint="$_mount_fs" || mount_hint="(none)"
 
-      if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "MOUNT FILESYSTEMS" \
         --ok-button "Next" --cancel-button "Back" \
         --inputbox "\nAllow specific filesystem mounts.\n\nComma-separated list: nfs, cifs, fuse, ext4, etc.\nLeave empty for defaults (none).\n\nCurrent: $mount_hint" 14 62 "$_mount_fs" \
@@ -3056,7 +3056,7 @@ Available env vars: APP, NSAPP, CTID, IP, HN, STORAGE, BRG.
 
 Leave empty to skip."
       while true; do
-        if result=$(whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+        if result=$(whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
           --title "POST-INSTALL HOOK (HOST)" \
           --ok-button "Next" --cancel-button "Back" \
           --inputbox "$_hook_prompt" 16 70 "${_post_install}" \
@@ -3070,17 +3070,17 @@ Leave empty to skip."
           fi
           # Reject obvious shell-meta sneaking through
           if [[ "$result" == *';'* || "$result" == *'$('* || "$result" == *'`'* || "$result" == *'&&'* || "$result" == *'||'* ]]; then
-            whiptail --backtitle "Proxmox VE Helper Scripts" --title "INVALID PATH" \
+            whiptail --backtitle "Infra-Monitor · NETWORK" --title "INVALID PATH" \
               --msgbox "Path contains shell metacharacters. Please provide a plain absolute file path." 10 70
             continue
           fi
           if [[ "$result" != /* ]]; then
-            whiptail --backtitle "Proxmox VE Helper Scripts" --title "INVALID PATH" \
+            whiptail --backtitle "Infra-Monitor · NETWORK" --title "INVALID PATH" \
               --msgbox "Path must be absolute (start with /).\n\nGot: $result" 10 70
             continue
           fi
           if [[ ! -f "$result" ]]; then
-            if ! whiptail --backtitle "Proxmox VE Helper Scripts" --title "FILE NOT FOUND" \
+            if ! whiptail --backtitle "Infra-Monitor · NETWORK" --title "FILE NOT FOUND" \
               --yesno "File does not exist on host:\n\n$result\n\nKeep this path anyway?" 12 70; then
               continue
             fi
@@ -3102,7 +3102,7 @@ Leave empty to skip."
       local verbose_default_flag="--defaultno"
       [[ "$_verbose" == "yes" ]] && verbose_default_flag=""
 
-      if whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "VERBOSE MODE" \
         $verbose_default_flag \
         --yesno "\nEnable Verbose Mode?\n\nShows detailed output during installation." 12 58; then
@@ -3162,7 +3162,7 @@ Advanced:
   Verbose: $_verbose
   Post-Install Script: ${post_install_display}${post_install_warn}"
 
-      if whiptail --backtitle "Proxmox VE Helper Scripts [Step $STEP/$MAX_STEP]" \
+      if whiptail --backtitle "Infra-Monitor · NETWORK [Step $STEP/$MAX_STEP]" \
         --title "CONFIRM SETTINGS" \
         --ok-button "Create LXC" --cancel-button "Back" \
         --yesno "$summary\n\nCreate ${APP} LXC with these settings?" 32 62; then
@@ -3314,7 +3314,7 @@ diagnostics_check() {
   fi
 
   local result
-  result=$(whiptail --backtitle "Proxmox VE Helper Scripts" \
+  result=$(whiptail --backtitle "Infra-Monitor · NETWORK" \
     --title "TELEMETRY & DIAGNOSTICS" \
     --ok-button "Confirm" --cancel-button "Exit" \
     --radiolist "\nHelp improve Community-Scripts by sharing anonymous data.\n\nWhat we collect:\n  - Container resources (CPU, RAM, disk), OS & PVE version\n  - Application name, install method and status\n\nWhat we DON'T collect:\n  - No IP addresses, hostnames, or personal data\n\nYou can change this anytime in the Settings menu.\nPrivacy: https://github.com/community-scripts/telemetry-service/blob/main/docs/PRIVACY.md\n\nUse SPACE to select, ENTER to confirm." 22 76 2 \
@@ -3359,7 +3359,7 @@ diagnostics_menu() {
   )
 
   if [[ "$current" == "yes" ]]; then
-    if whiptail --backtitle "Proxmox VE Helper Scripts" \
+    if whiptail --backtitle "Infra-Monitor · NETWORK" \
       --title "TELEMETRY SETTINGS" \
       --yesno "${dialog_text[*]}" 14 64 \
       --yes-button "Disable" --no-button "Keep enabled"; then
@@ -3368,7 +3368,7 @@ diagnostics_menu() {
       whiptail --msgbox "Telemetry disabled.\n\nNote: Existing containers keep their current setting.\nNew containers will inherit this choice." 10 58
     fi
   else
-    if whiptail --backtitle "Proxmox VE Helper Scripts" \
+    if whiptail --backtitle "Infra-Monitor · NETWORK" \
       --title "TELEMETRY SETTINGS" \
       --yesno "${dialog_text[*]}" 14 64 \
       --yes-button "Enable" --no-button "Keep disabled"; then
@@ -3495,7 +3495,7 @@ install_script() {
   while true; do
     if [ -z "$CHOICE" ]; then
       TMP_CHOICE=$(whiptail \
-        --backtitle "Proxmox VE Helper Scripts" \
+        --backtitle "Infra-Monitor · NETWORK" \
         --title "Community-Scripts Options" \
         --ok-button "Select" --cancel-button "Exit Script" \
         --notags \
@@ -3612,7 +3612,7 @@ settings_menu() {
     fi
 
     local choice
-    choice=$(whiptail --backtitle "Proxmox VE Helper Scripts" \
+    choice=$(whiptail --backtitle "Infra-Monitor · NETWORK" \
       --title "Community-Scripts SETTINGS Menu" \
       --ok-button "Select" --cancel-button "Exit Script" \
       --menu "\n\nChoose a settings option:\n\nUse Arrow keys to navigate, ENTER to select, TAB for buttons." 20 60 9 \
@@ -3779,8 +3779,8 @@ ssh_discover_default_files() {
 
 configure_ssh_settings() {
   local step_info="${1:-}"
-  local backtitle="Proxmox VE Helper Scripts"
-  [[ -n "$step_info" ]] && backtitle="Proxmox VE Helper Scripts [${step_info}]"
+  local backtitle="Infra-Monitor · NETWORK"
+  [[ -n "$step_info" ]] && backtitle="Infra-Monitor · NETWORK [${step_info}]"
 
   SSH_KEYS_FILE="$(mktemp)"
   : >"$SSH_KEYS_FILE"
@@ -4118,7 +4118,7 @@ check_container_os_guard() {
 
   if [[ "${PHS_SILENT:-0}" != "1" ]] && command -v whiptail &>/dev/null && [ -t 0 ] && [[ "$TERM" != "dumb" ]]; then
     local choice
-    choice=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "OS VERSION MISMATCH" --menu \
+    choice=$(whiptail --backtitle "Infra-Monitor · NETWORK" --title "OS VERSION MISMATCH" --menu \
       "${mismatch_detail}\n\nIf you continue anyway, it may break — no support is provided in that case.\n\nContinue anyway?" \
       20 70 3 \
       "1" "No  (cancel update)" \
@@ -4185,7 +4185,7 @@ start() {
     update_motd_ip
     cleanup_lxc
   else
-    CHOICE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "${APP} LXC Update/Setting" --menu \
+    CHOICE=$(whiptail --backtitle "Infra-Monitor · NETWORK" --title "${APP} LXC Update/Setting" --menu \
       "Support/Update functions for ${APP} LXC. Choose an option:" \
       12 60 3 \
       "1" "YES (Silent Mode)" \
@@ -6014,7 +6014,7 @@ select_storage() {
   local WIDTH=$((COL_WIDTH + 42))
   while true; do
     local DISPLAY_SELECTED
-    DISPLAY_SELECTED=$(whiptail --backtitle "Proxmox VE Helper Scripts" \
+    DISPLAY_SELECTED=$(whiptail --backtitle "Infra-Monitor · NETWORK" \
       --title "Storage Pools" \
       --radiolist "Which storage pool for ${CONTENT_LABEL,,}?\n(Spacebar to select)" \
       16 "$WIDTH" 6 "${MENU[@]}" 3>&1 1>&2 2>&3) || { exit_script; }
@@ -6129,7 +6129,7 @@ check_storage_health() {
   if ((used_pct >= 95)); then
     msg_warn "Storage '${storage}' (${storage_type}) is ${used_pct}% full (${free_gb_fmt} free)"
     if ! is_unattended && command -v whiptail >/dev/null 2>&1 && [[ -t 0 ]]; then
-      if ! whiptail --backtitle "Proxmox VE Helper Scripts" \
+      if ! whiptail --backtitle "Infra-Monitor · NETWORK" \
         --title "STORAGE ALMOST FULL" \
         --yesno "Storage '${storage}' is ${used_pct}% full.\n\nType: ${storage_type}\nAvailable: ${free_gb_fmt}\nRequired for CT: ${required_gb} GB\n\nContinue anyway?" 14 70; then
         msg_error "Installation cancelled – storage nearly full"
@@ -7192,40 +7192,40 @@ description() {
   script_url="https://github.com/junioralmeida-net/Infra-Monitor"
   repo_url="https://github.com/junioralmeida-net/Infra-Monitor"
 
-  # Generate LXC Description — colors from design-system-ref-agentic-builder.html
+  # Generate LXC Description — IdentidadeVisual.png + design-system tokens
   DESCRIPTION=$(
     cat <<EOF
-<div align='center' style='background:#121212;padding:16px;border-radius:8px;'>
-  <a href='${repo_url}' target='_blank' rel='noopener noreferrer'>
-    <img src='${COMMUNITY_SCRIPTS_URL}/misc/images/LOGO1.png' alt='Infra-Monitor' style='width:120px;height:auto;'/>
-  </a>
-
-  <h2 style='font-size: 24px; margin: 20px 0; color:#F3F3F3;'>${APP} LXC</h2>
-
-  <p style='margin: 16px 0;'>
-    <a href='${repo_url}' target='_blank' rel='noopener noreferrer'>
-      <img src='https://img.shields.io/badge/Infra--Monitor-NETWORK-D97757?style=flat-square' alt='Infra-Monitor' />
+<div style='background:#1A1A1A;border-radius:12px;overflow:hidden;font-family:Outfit,Inter,DejaVu Sans,sans-serif;border:1px solid #262624;'>
+  <div style='height:4px;background:linear-gradient(#D97757,#D0572F);'></div>
+  <div align='center' style='padding:20px 16px 16px;'>
+    <a href='${repo_url}' target='_blank' rel='noopener noreferrer' style='display:inline-block;background:#F5F5F5;border-radius:8px;padding:12px 16px;'>
+      <img src='${COMMUNITY_SCRIPTS_URL}/misc/images/LOGO1.png' alt='NETWORK Informática' style='width:168px;height:auto;display:block;'/>
     </a>
-  </p>
-
-  <p style='margin: 12px 0;'>
-    <a href='${script_url}' target='_blank' rel='noopener noreferrer'>
-      <img src='https://img.shields.io/badge/📦-Repositório-D0572F?style=flat-square' alt='Open repository' />
-    </a>
-  </p>
-
-  <span style='margin: 0 10px;'>
-    <i class="fa fa-github fa-fw" style="color: #F3F3F3;"></i>
-    <a href='${repo_url}' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #D97757;'>GitHub</a>
-  </span>
-  <span style='margin: 0 10px;'>
-    <i class="fa fa-book fa-fw" style="color: #F3F3F3;"></i>
-    <a href='${repo_url}#readme' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #4B73FF;'>Docs</a>
-  </span>
-  <span style='margin: 0 10px;'>
-    <i class="fa fa-exclamation-circle fa-fw" style="color: #F3F3F3;"></i>
-    <a href='${repo_url}/issues' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #C63131;'>Issues</a>
-  </span>
+    <h2 style='font-size:22px;margin:18px 0 4px;color:#F5F5F5;letter-spacing:-0.02em;font-weight:700;'>${APP} LXC</h2>
+    <p style='margin:0 0 16px;color:#616161;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;'>NETWORK Informática</p>
+    <p style='margin:12px 0;'>
+      <a href='${repo_url}' target='_blank' rel='noopener noreferrer'>
+        <img src='https://img.shields.io/badge/Infra--Monitor-NETWORK-D0572F?style=flat-square' alt='Infra-Monitor' />
+      </a>
+    </p>
+    <p style='margin:8px 0 16px;'>
+      <a href='${script_url}' target='_blank' rel='noopener noreferrer'>
+        <img src='https://img.shields.io/badge/Repositório-1A1A1A?style=flat-square&amp;logoColor=F5F5F5' alt='Open repository' />
+      </a>
+    </p>
+    <span style='margin:0 10px;'>
+      <i class="fa fa-github fa-fw" style="color:#F5F5F5;"></i>
+      <a href='${repo_url}' target='_blank' rel='noopener noreferrer' style='text-decoration:none;color:#D0572F;'>GitHub</a>
+    </span>
+    <span style='margin:0 10px;'>
+      <i class="fa fa-book fa-fw" style="color:#F5F5F5;"></i>
+      <a href='${repo_url}#readme' target='_blank' rel='noopener noreferrer' style='text-decoration:none;color:#4B73FF;'>Docs</a>
+    </span>
+    <span style='margin:0 10px;'>
+      <i class="fa fa-exclamation-circle fa-fw" style="color:#F5F5F5;"></i>
+      <a href='${repo_url}/issues' target='_blank' rel='noopener noreferrer' style='text-decoration:none;color:#C63131;'>Issues</a>
+    </span>
+  </div>
 </div>
 EOF
   )
@@ -7247,7 +7247,7 @@ EOF
 
     if [[ ! -f "${var_post_install}" ]]; then
       msg_error "Post-install hook not found on host: ${var_post_install}"
-      whiptail --backtitle "Proxmox VE Helper Scripts" \
+      whiptail --backtitle "Infra-Monitor · NETWORK" \
         --title "POST-INSTALL HOOK FAILED" \
         --msgbox "The configured post-install hook was not found on the Proxmox host:\n\n${var_post_install}\n\nThe LXC was created successfully, but the hook did NOT run." 14 72 || true
     else
@@ -7262,7 +7262,7 @@ EOF
         msg_error "Post-install hook failed (rc=${_hook_rc}) – see ${_hook_log}"
         local _hook_tail=""
         _hook_tail="$(tail -n 15 "${_hook_log}" 2>/dev/null || true)"
-        whiptail --backtitle "Proxmox VE Helper Scripts" \
+        whiptail --backtitle "Infra-Monitor · NETWORK" \
           --title "POST-INSTALL HOOK FAILED" \
           --msgbox "Hook exited with code ${_hook_rc}.\n\nScript: ${var_post_install}\nLog:    ${_hook_log}\n\n--- Last log lines ---\n${_hook_tail}\n\nThe LXC itself was created successfully." 22 78 || true
       fi

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 200" role="img" aria-label="NETWORK Informática">
+  <title>NETWORK Informática</title>
+  <!-- Geometric N  IdentidadeVisual.png -->
+  <path fill="#F5F5F5" d="M28 28h42v84.6L186 28h42v144h-42V87.4L70 172H28V28z"/>
+  <g fill="#F5F5F5" font-family="Outfit, Inter, Arial, sans-serif" font-weight="800">
+    <text x="254" y="96" font-size="64" letter-spacing="1.5">NETWORK</text>
+    <text x="254" y="148" font-size="28" font-weight="600" letter-spacing="6">INFORMÁTICA</text>
+  </g>
+  <rect x="668" y="128" width="22" height="22" fill="#D0572F"/>
+</svg>

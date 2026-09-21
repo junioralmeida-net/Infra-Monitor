@@ -117,7 +117,7 @@ function _ci_ssh_build_choices() {
 # Sets: CLOUDINIT_SSH_KEYS (path to temporary file with selected keys)
 # ------------------------------------------------------------------------------
 function configure_cloudinit_ssh_keys() {
-  local backtitle="Proxmox VE Helper Scripts"
+  local backtitle="Infra-Monitor · NETWORK"
   local ssh_key_mode
 
   # Create temp file for selected keys
@@ -437,7 +437,7 @@ function configure_cloud_init_interactive() {
   fi
 
   # Ask if user wants to enable Cloud-Init
-  if ! (whiptail --backtitle "Proxmox VE Helper Scripts" --title "CLOUD-INIT" \
+  if ! (whiptail --backtitle "Infra-Monitor · NETWORK" --title "CLOUD-INIT" \
     --yesno "Enable Cloud-Init for VM configuration?\n\nCloud-Init allows automatic configuration of:\n• User accounts and passwords\n• SSH keys\n• Network settings (DHCP/Static)\n• DNS configuration\n\nYou can also configure these settings later in Proxmox UI." 16 68); then
     export CLOUDINIT_ENABLE="no"
     return 0
@@ -446,7 +446,7 @@ function configure_cloud_init_interactive() {
   export CLOUDINIT_ENABLE="yes"
 
   # Username
-  if CLOUDINIT_USER=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox \
+  if CLOUDINIT_USER=$(whiptail --backtitle "Infra-Monitor · NETWORK" --inputbox \
     "Cloud-Init Username" 8 58 "$default_user" --title "USERNAME" 3>&1 1>&2 2>&3); then
     export CLOUDINIT_USER="${CLOUDINIT_USER:-$default_user}"
   else
@@ -454,7 +454,7 @@ function configure_cloud_init_interactive() {
   fi
 
   # Network configuration
-  if (whiptail --backtitle "Proxmox VE Helper Scripts" --title "NETWORK MODE" \
+  if (whiptail --backtitle "Infra-Monitor · NETWORK" --title "NETWORK MODE" \
     --yesno "Use DHCP for network configuration?\n\nSelect 'No' for static IP configuration." 10 58); then
     export CLOUDINIT_NETWORK_MODE="dhcp"
   else
@@ -462,13 +462,13 @@ function configure_cloud_init_interactive() {
 
     # Static IP with validation
     while true; do
-      if CLOUDINIT_IP=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox \
+      if CLOUDINIT_IP=$(whiptail --backtitle "Infra-Monitor · NETWORK" --inputbox \
         "Static IP Address (CIDR format)\nExample: 192.168.1.100/24" 9 58 "" --title "IP ADDRESS" 3>&1 1>&2 2>&3); then
         if validate_ip_cidr "$CLOUDINIT_IP"; then
           export CLOUDINIT_IP
           break
         else
-          whiptail --backtitle "Proxmox VE Helper Scripts" --title "INVALID IP" \
+          whiptail --backtitle "Infra-Monitor · NETWORK" --title "INVALID IP" \
             --msgbox "Invalid IP format: $CLOUDINIT_IP\n\nPlease use CIDR format: x.x.x.x/xx\nExample: 192.168.1.100/24" 10 50
         fi
       else
@@ -481,13 +481,13 @@ function configure_cloud_init_interactive() {
     # Gateway with validation
     if [ "$CLOUDINIT_NETWORK_MODE" = "static" ]; then
       while true; do
-        if CLOUDINIT_GW=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox \
+        if CLOUDINIT_GW=$(whiptail --backtitle "Infra-Monitor · NETWORK" --inputbox \
           "Gateway IP Address\nExample: 192.168.1.1" 8 58 "" --title "GATEWAY" 3>&1 1>&2 2>&3); then
           if validate_ip "$CLOUDINIT_GW"; then
             export CLOUDINIT_GW
             break
           else
-            whiptail --backtitle "Proxmox VE Helper Scripts" --title "INVALID GATEWAY" \
+            whiptail --backtitle "Infra-Monitor · NETWORK" --title "INVALID GATEWAY" \
               --msgbox "Invalid gateway format: $CLOUDINIT_GW\n\nPlease use format: x.x.x.x\nExample: 192.168.1.1" 10 50
           fi
         else
@@ -500,7 +500,7 @@ function configure_cloud_init_interactive() {
   fi
 
   # DNS Servers
-  if CLOUDINIT_DNS=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox \
+  if CLOUDINIT_DNS=$(whiptail --backtitle "Infra-Monitor · NETWORK" --inputbox \
     "DNS Servers (space-separated)" 8 58 "1.1.1.1 8.8.8.8" --title "DNS SERVERS" 3>&1 1>&2 2>&3); then
     export CLOUDINIT_DNS="${CLOUDINIT_DNS:-1.1.1.1 8.8.8.8}"
   else

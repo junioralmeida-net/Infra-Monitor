@@ -76,7 +76,14 @@ header_info() {
   term_width=$(tput cols 2>/dev/null || echo 120)
 
   if [ -n "$header_content" ]; then
-    echo "$header_content"
+    local _brand=$'\033[38;2;208;87;47m'
+    local _paper=$'\033[38;2;245;245;245m'
+    local _muted=$'\033[38;2;97;97;97m'
+    local _cl=$'\033[m'
+    echo -e "${_brand}${header_content}${_cl}"
+    echo -e "${_paper}  NETWORK Informática${_cl}${_muted}  ·  Infra-Monitor${_cl}"
+    echo -e "${_brand}  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬${_cl}"
+    echo
   fi
 }
 
@@ -86,12 +93,14 @@ header_info() {
 # ------------------------------------------------------------------------------
 color() {
   YW=$'\033[38;2;217;119;87m'       # --brand-500
-  YWB=$'\033[38;2;208;87;47m'       # --brand-600
+  YWB=$'\033[38;2;208;87;47m'       # --brand-600 / identidade
   BL=$'\033[38;2;75;115;255m'       # --info
   RD=$'\033[1;38;2;198;49;49m'      # --danger
   BGN=$'\033[4;38;2;41;224;169m'    # --success underline
   GN=$'\033[1;38;2;41;224;169m'     # --success
   DGN=$'\033[38;2;41;224;169m'      # --success
+  FG1=$'\033[38;2;245;245;245m'     # --paper
+  MUTED=$'\033[38;2;97;97;97m'      # --fg-muted
   CL=$'\033[m'
 }
 
@@ -642,7 +651,7 @@ arch_check() {
 
 ssh_check() {
   if command -v pveversion >/dev/null 2>&1 && [ -n "${SSH_CLIENT:-}" ]; then
-    if whiptail --backtitle "Proxmox VE Helper Scripts" --defaultno --title "SSH DETECTED" --yesno "It's suggested to use the Proxmox shell instead of SSH, since SSH can create issues while gathering variables. Would you like to proceed with using SSH?" 10 62; then
+    if whiptail --backtitle "Infra-Monitor · NETWORK" --defaultno --title "SSH DETECTED" --yesno "It's suggested to use the Proxmox shell instead of SSH, since SSH can create issues while gathering variables. Would you like to proceed with using SSH?" 10 62; then
       :
     else
       clear
@@ -669,7 +678,7 @@ vm_confirm_new_vm() {
   local height="${3:-10}"
   local width="${4:-58}"
 
-  whiptail --backtitle "Proxmox VE Helper Scripts" --title "$title" --yesno "$message" "$height" "$width"
+  whiptail --backtitle "Infra-Monitor · NETWORK" --title "$title" --yesno "$message" "$height" "$width"
 }
 
 vm_choose_settings_mode() {
@@ -677,7 +686,7 @@ vm_choose_settings_mode() {
   local height="${2:-10}"
   local width="${3:-58}"
 
-  whiptail --backtitle "Proxmox VE Helper Scripts" --title "SETTINGS" --yesno "$message" --no-button Advanced "$height" "$width"
+  whiptail --backtitle "Infra-Monitor · NETWORK" --title "SETTINGS" --yesno "$message" --no-button Advanced "$height" "$width"
 }
 
 vm_confirm_advanced_settings() {
@@ -685,14 +694,14 @@ vm_confirm_advanced_settings() {
   local height="${2:-10}"
   local width="${3:-58}"
 
-  whiptail --backtitle "Proxmox VE Helper Scripts" --title "ADVANCED SETTINGS COMPLETE" --yesno "$message" --no-button Do-Over "$height" "$width"
+  whiptail --backtitle "Infra-Monitor · NETWORK" --title "ADVANCED SETTINGS COMPLETE" --yesno "$message" --no-button Do-Over "$height" "$width"
 }
 
 vm_prompt_vmid() {
   local default_vmid="${1:-$(get_valid_nextid)}"
 
   while true; do
-    if VMID=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set Virtual Machine ID" 8 58 "$default_vmid" --title "VIRTUAL MACHINE ID" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if VMID=$(whiptail --backtitle "Infra-Monitor · NETWORK" --inputbox "Set Virtual Machine ID" 8 58 "$default_vmid" --title "VIRTUAL MACHINE ID" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
       if [ -z "$VMID" ]; then
         VMID=$(get_valid_nextid)
       fi
@@ -745,7 +754,7 @@ vm_prompt_machine_type() {
     q35_default="ON"
   fi
 
-  if machine_choice=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "MACHINE TYPE" --radiolist --cancel-button Exit-Script "Choose Type" 10 58 2 \
+  if machine_choice=$(whiptail --backtitle "Infra-Monitor · NETWORK" --title "MACHINE TYPE" --radiolist --cancel-button Exit-Script "Choose Type" 10 58 2 \
     "i440fx" "Machine i440fx" "$i440fx_default" \
     "q35" "Machine q35" "$q35_default" \
     3>&1 1>&2 2>&3); then
@@ -782,7 +791,7 @@ vm_prompt_disk_size() {
   local default_size="${1:-8G}"
   local prompt_message="${2:-Set Disk Size in GiB (e.g., 10, 20)}"
 
-  if DISK_SIZE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "$prompt_message" 8 58 "$default_size" --title "DISK SIZE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if DISK_SIZE=$(whiptail --backtitle "Infra-Monitor · NETWORK" --inputbox "$prompt_message" 8 58 "$default_size" --title "DISK SIZE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     DISK_SIZE=$(echo "$DISK_SIZE" | tr -d ' ')
     if [[ "$DISK_SIZE" =~ ^[0-9]+$ ]]; then
       DISK_SIZE="${DISK_SIZE}G"
@@ -809,7 +818,7 @@ vm_prompt_disk_cache() {
     write_default="ON"
   fi
 
-  if cache_choice=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "DISK CACHE" --radiolist "Choose" --cancel-button Exit-Script 10 58 2 \
+  if cache_choice=$(whiptail --backtitle "Infra-Monitor · NETWORK" --title "DISK CACHE" --radiolist "Choose" --cancel-button Exit-Script 10 58 2 \
     "0" "None (Default)" "$none_default" \
     "1" "Write Through" "$write_default" \
     3>&1 1>&2 2>&3); then
@@ -830,14 +839,14 @@ vm_prompt_hostname() {
   local adjusted_hostname
   local input_hostname
 
-  if input_hostname=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set Hostname" 8 58 "$default_hostname" --title "HOSTNAME" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if input_hostname=$(whiptail --backtitle "Infra-Monitor · NETWORK" --inputbox "Set Hostname" 8 58 "$default_hostname" --title "HOSTNAME" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z "$input_hostname" ]; then
       HN="$default_hostname"
     else
       adjusted_hostname=$(sanitize_vm_hostname "$input_hostname")
       HN="${adjusted_hostname:-$default_hostname}"
       if [ "$HN" != "${input_hostname,,}" ]; then
-        whiptail --backtitle "Proxmox VE Helper Scripts" --title "HOSTNAME ADJUSTED" --msgbox "Invalid characters detected. Hostname has been adjusted to:\n\n  $HN" 10 58
+        whiptail --backtitle "Infra-Monitor · NETWORK" --title "HOSTNAME ADJUSTED" --msgbox "Invalid characters detected. Hostname has been adjusted to:\n\n  $HN" 10 58
       fi
     fi
     echo -e "${HOSTNAME}${BOLD}${DGN}Hostname: ${BGN}$HN${CL}"
@@ -857,7 +866,7 @@ vm_prompt_cpu_model() {
     host_default="ON"
   fi
 
-  if cpu_choice=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "CPU MODEL" --radiolist "Choose" --cancel-button Exit-Script 10 58 2 \
+  if cpu_choice=$(whiptail --backtitle "Infra-Monitor · NETWORK" --title "CPU MODEL" --radiolist "Choose" --cancel-button Exit-Script 10 58 2 \
     "0" "KVM64 (Default)" "$kvm_default" \
     "1" "Host" "$host_default" \
     3>&1 1>&2 2>&3); then
@@ -877,7 +886,7 @@ vm_prompt_cpu_cores() {
   local default_cores="${1:-2}"
 
   while true; do
-    if CORE_COUNT=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Allocate CPU Cores" 8 58 "$default_cores" --title "CORE COUNT" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if CORE_COUNT=$(whiptail --backtitle "Infra-Monitor · NETWORK" --inputbox "Allocate CPU Cores" 8 58 "$default_cores" --title "CORE COUNT" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
       if [ -z "$CORE_COUNT" ]; then
         CORE_COUNT="$default_cores"
       fi
@@ -885,7 +894,7 @@ vm_prompt_cpu_cores() {
         echo -e "${CPUCORE}${BOLD}${DGN}CPU Cores: ${BGN}$CORE_COUNT${CL}"
         break
       fi
-      whiptail --backtitle "Proxmox VE Helper Scripts" --title "INVALID INPUT" --msgbox "CPU Cores must be a positive integer (e.g., 2)." 8 58
+      whiptail --backtitle "Infra-Monitor · NETWORK" --title "INVALID INPUT" --msgbox "CPU Cores must be a positive integer (e.g., 2)." 8 58
     else
       exit_script
     fi
@@ -896,7 +905,7 @@ vm_prompt_ram() {
   local default_ram="${1:-2048}"
 
   while true; do
-    if RAM_SIZE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Allocate RAM in MiB" 8 58 "$default_ram" --title "RAM" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if RAM_SIZE=$(whiptail --backtitle "Infra-Monitor · NETWORK" --inputbox "Allocate RAM in MiB" 8 58 "$default_ram" --title "RAM" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
       if [ -z "$RAM_SIZE" ]; then
         RAM_SIZE="$default_ram"
       fi
@@ -904,7 +913,7 @@ vm_prompt_ram() {
         echo -e "${RAMSIZE}${BOLD}${DGN}RAM Size: ${BGN}$RAM_SIZE${CL}"
         break
       fi
-      whiptail --backtitle "Proxmox VE Helper Scripts" --title "INVALID INPUT" --msgbox "RAM Size must be a positive integer in MiB (e.g., 2048)." 8 58
+      whiptail --backtitle "Infra-Monitor · NETWORK" --title "INVALID INPUT" --msgbox "RAM Size must be a positive integer in MiB (e.g., 2048)." 8 58
     else
       exit_script
     fi
@@ -914,7 +923,7 @@ vm_prompt_ram() {
 vm_prompt_bridge() {
   local default_bridge="${1:-vmbr0}"
 
-  if BRG=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a Bridge" 8 58 "$default_bridge" --title "BRIDGE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+  if BRG=$(whiptail --backtitle "Infra-Monitor · NETWORK" --inputbox "Set a Bridge" 8 58 "$default_bridge" --title "BRIDGE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
     if [ -z "$BRG" ]; then
       BRG="$default_bridge"
     fi
@@ -929,7 +938,7 @@ vm_prompt_mac() {
   local input_mac
 
   while true; do
-    if input_mac=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a MAC Address" 8 58 "$default_mac" --title "MAC ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if input_mac=$(whiptail --backtitle "Infra-Monitor · NETWORK" --inputbox "Set a MAC Address" 8 58 "$default_mac" --title "MAC ADDRESS" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
       if [ -z "$input_mac" ]; then
         MAC="$default_mac"
         echo -e "${MACADDRESS}${BOLD}${DGN}MAC Address: ${BGN}$MAC${CL}"
@@ -940,7 +949,7 @@ vm_prompt_mac() {
         echo -e "${MACADDRESS}${BOLD}${DGN}MAC Address: ${BGN}$MAC${CL}"
         break
       fi
-      whiptail --backtitle "Proxmox VE Helper Scripts" --title "INVALID INPUT" --msgbox "Invalid MAC address format. Use XX:XX:XX:XX:XX:XX (e.g., AA:BB:CC:DD:EE:FF)." 8 58
+      whiptail --backtitle "Infra-Monitor · NETWORK" --title "INVALID INPUT" --msgbox "Invalid MAC address format. Use XX:XX:XX:XX:XX:XX (e.g., AA:BB:CC:DD:EE:FF)." 8 58
     else
       exit_script
     fi
@@ -952,7 +961,7 @@ vm_prompt_vlan() {
   local input_vlan
 
   while true; do
-    if input_vlan=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set a Vlan (leave blank for default)" 8 58 "$default_vlan" --title "VLAN" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if input_vlan=$(whiptail --backtitle "Infra-Monitor · NETWORK" --inputbox "Set a Vlan (leave blank for default)" 8 58 "$default_vlan" --title "VLAN" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
       if [ -z "$input_vlan" ]; then
         VLAN=""
         echo -e "${VLANTAG}${BOLD}${DGN}VLAN: ${BGN}Default${CL}"
@@ -963,7 +972,7 @@ vm_prompt_vlan() {
         echo -e "${VLANTAG}${BOLD}${DGN}VLAN: ${BGN}$input_vlan${CL}"
         break
       fi
-      whiptail --backtitle "Proxmox VE Helper Scripts" --title "INVALID INPUT" --msgbox "VLAN must be a number between 1 and 4094, or leave blank for default." 8 58
+      whiptail --backtitle "Infra-Monitor · NETWORK" --title "INVALID INPUT" --msgbox "VLAN must be a number between 1 and 4094, or leave blank for default." 8 58
     else
       exit_script
     fi
@@ -975,7 +984,7 @@ vm_prompt_mtu() {
   local input_mtu
 
   while true; do
-    if input_mtu=$(whiptail --backtitle "Proxmox VE Helper Scripts" --inputbox "Set Interface MTU Size (leave blank for default)" 8 58 "$default_mtu" --title "MTU SIZE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
+    if input_mtu=$(whiptail --backtitle "Infra-Monitor · NETWORK" --inputbox "Set Interface MTU Size (leave blank for default)" 8 58 "$default_mtu" --title "MTU SIZE" --cancel-button Exit-Script 3>&1 1>&2 2>&3); then
       if [ -z "$input_mtu" ]; then
         MTU=""
         echo -e "${DEFAULT}${BOLD}${DGN}Interface MTU Size: ${BGN}Default${CL}"
@@ -986,7 +995,7 @@ vm_prompt_mtu() {
         echo -e "${DEFAULT}${BOLD}${DGN}Interface MTU Size: ${BGN}$input_mtu${CL}"
         break
       fi
-      whiptail --backtitle "Proxmox VE Helper Scripts" --title "INVALID INPUT" --msgbox "MTU Size must be a number between 576 and 65520, or leave blank for default." 8 58
+      whiptail --backtitle "Infra-Monitor · NETWORK" --title "INVALID INPUT" --msgbox "MTU Size must be a number between 576 and 65520, or leave blank for default." 8 58
     else
       exit_script
     fi
@@ -1001,7 +1010,7 @@ vm_prompt_start_vm() {
     default_flag=(--defaultno)
   fi
 
-  if whiptail --backtitle "Proxmox VE Helper Scripts" "${default_flag[@]}" --title "START VIRTUAL MACHINE" --yesno "Start VM when completed?" 10 58; then
+  if whiptail --backtitle "Infra-Monitor · NETWORK" "${default_flag[@]}" --title "START VIRTUAL MACHINE" --yesno "Start VM when completed?" 10 58; then
     START_VM="yes"
   else
     START_VM="no"
@@ -1069,7 +1078,7 @@ vm_select_storage() {
       printf "\r\e[2K" >&2
     fi
     while [ -z "${STORAGE:+x}" ]; do
-      STORAGE=$(whiptail --backtitle "Proxmox VE Helper Scripts" --title "Storage Pools" --radiolist \
+      STORAGE=$(whiptail --backtitle "Infra-Monitor · NETWORK" --title "Storage Pools" --radiolist \
         "Which storage pool would you like to use for ${hostname}?\nTo make a selection, use the Spacebar.\n" \
         16 $(($msg_max_length + 23)) 6 \
         "${storage_menu[@]}" 3>&1 1>&2 2>&3)
@@ -1108,31 +1117,32 @@ set_description() {
 
   DESCRIPTION=$(
     cat <<EOF
-<div align='center' style='background:#121212;padding:16px;border-radius:8px;'>
-  <a href='${repo_url}' target='_blank' rel='noopener noreferrer'>
-    <img src='${COMMUNITY_SCRIPTS_URL}/misc/images/LOGO1.png' alt='Infra-Monitor' style='width:120px;height:auto;'/>
-  </a>
-
-  <h2 style='font-size: 24px; margin: 20px 0; color:#F3F3F3;'>${description_title}</h2>
-
-  <p style='margin: 16px 0;'>
-    <a href='${repo_url}' target='_blank' rel='noopener noreferrer'>
-      <img src='https://img.shields.io/badge/Infra--Monitor-NETWORK-D97757?style=flat-square' alt='Infra-Monitor' />
+<div style='background:#1A1A1A;border-radius:12px;overflow:hidden;font-family:Outfit,Inter,DejaVu Sans,sans-serif;border:1px solid #262624;'>
+  <div style='height:4px;background:linear-gradient(#D97757,#D0572F);'></div>
+  <div align='center' style='padding:20px 16px 16px;'>
+    <a href='${repo_url}' target='_blank' rel='noopener noreferrer' style='display:inline-block;background:#F5F5F5;border-radius:8px;padding:12px 16px;'>
+      <img src='${COMMUNITY_SCRIPTS_URL}/misc/images/LOGO1.png' alt='NETWORK Informática' style='width:168px;height:auto;display:block;'/>
     </a>
-  </p>
-
-  <span style='margin: 0 10px;'>
-    <i class="fa fa-github fa-fw" style="color: #F3F3F3;"></i>
-    <a href='${repo_url}' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #D97757;'>GitHub</a>
-  </span>
-  <span style='margin: 0 10px;'>
-    <i class="fa fa-book fa-fw" style="color: #F3F3F3;"></i>
-    <a href='${repo_url}#readme' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #4B73FF;'>Docs</a>
-  </span>
-  <span style='margin: 0 10px;'>
-    <i class="fa fa-exclamation-circle fa-fw" style="color: #F3F3F3;"></i>
-    <a href='${repo_url}/issues' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #C63131;'>Issues</a>
-  </span>
+    <h2 style='font-size:22px;margin:18px 0 4px;color:#F5F5F5;letter-spacing:-0.02em;font-weight:700;'>${description_title}</h2>
+    <p style='margin:0 0 16px;color:#616161;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;'>NETWORK Informática</p>
+    <p style='margin:12px 0 16px;'>
+      <a href='${repo_url}' target='_blank' rel='noopener noreferrer'>
+        <img src='https://img.shields.io/badge/Infra--Monitor-NETWORK-D0572F?style=flat-square' alt='Infra-Monitor' />
+      </a>
+    </p>
+    <span style='margin:0 10px;'>
+      <i class="fa fa-github fa-fw" style="color:#F5F5F5;"></i>
+      <a href='${repo_url}' target='_blank' rel='noopener noreferrer' style='text-decoration:none;color:#D0572F;'>GitHub</a>
+    </span>
+    <span style='margin:0 10px;'>
+      <i class="fa fa-book fa-fw" style="color:#F5F5F5;"></i>
+      <a href='${repo_url}#readme' target='_blank' rel='noopener noreferrer' style='text-decoration:none;color:#4B73FF;'>Docs</a>
+    </span>
+    <span style='margin:0 10px;'>
+      <i class="fa fa-exclamation-circle fa-fw" style="color:#F5F5F5;"></i>
+      <a href='${repo_url}/issues' target='_blank' rel='noopener noreferrer' style='text-decoration:none;color:#C63131;'>Issues</a>
+    </span>
+  </div>
 </div>
 EOF
   )

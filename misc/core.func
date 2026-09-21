@@ -48,11 +48,11 @@ load_functions() {
 # color()
 #
 # - Sets ANSI color codes for styled terminal output (24-bit truecolor)
-# - Palette from PASTA_BASE/design-system-ref-agentic-builder.html:
-#     brand-500 #D97757 | brand-600 #D0572F | info #4B73FF
-#     success #29E0A9   | danger #C63131
-# - Variables: YW (brand), YWB (brand bright), BL (info), RD (danger),
-#             GN/DGN/BGN (success), CL (clear)
+# - Palette from IdentidadeVisual.png + design-system-ref-agentic-builder.html:
+#     ink #1A1A1A | brand #D0572F | paper #F5F5F5
+#     brand-500 #D97757 | info #4B73FF | success #29E0A9 | danger #C63131
+# - Variables: YW (brand-500), YWB (brand-600), BL (info), RD (danger),
+#             GN/DGN/BGN (success), FG1/MUTED (text), CL (clear)
 # ------------------------------------------------------------------------------
 color() {
   # --brand-500 / --brand-600 (highlights, warnings, accents)
@@ -66,6 +66,9 @@ color() {
   BGN=$'\033[4;38;2;41;224;169m'
   GN=$'\033[1;38;2;41;224;169m'
   DGN=$'\033[38;2;41;224;169m'
+  # --paper / --fg-muted
+  FG1=$'\033[38;2;245;245;245m'
+  MUTED=$'\033[38;2;97;97;97m'
   CL=$'\033[m'
 }
 
@@ -1040,7 +1043,15 @@ header_info() {
   term_width=$(tput cols 2>/dev/null || echo 120)
 
   if [ -n "$header_content" ]; then
-    echo "$header_content"
+    # Brand-600 terracotta — IdentidadeVisual.png / design-system brand-600
+    local _brand=$'\033[38;2;208;87;47m'
+    local _paper=$'\033[38;2;245;245;245m'
+    local _muted=$'\033[38;2;97;97;97m'
+    local _cl=$'\033[m'
+    echo -e "${_brand}${header_content}${_cl}"
+    echo -e "${_paper}  NETWORK Informática${_cl}${_muted}  ·  Infra-Monitor${_cl}"
+    echo -e "${_brand}  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬${_cl}"
+    echo
   fi
 }
 
@@ -1975,7 +1986,7 @@ ensure_whiptail() {
 arm64_notice() {
   [[ "$(dpkg --print-architecture)" == "arm64" ]] || return 0
 
-  whiptail --backtitle "Proxmox VE Helper Scripts" \
+  whiptail --backtitle "Infra-Monitor · NETWORK" \
     --title "ARM64 SUPPORT" \
     --ok-button "Continue" \
     --msgbox "ARM64 support is in active development.\n\nSome scripts, packages, or application releases may not be fully tested or working yet." 10 68
