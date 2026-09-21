@@ -4216,6 +4216,9 @@ start() {
     update_motd_ip
     cleanup_lxc
   fi
+  # Update runs inside an existing LXC. Do not fall through to build_container()
+  # (that path needs host-only vars like MAC and would abort under set -u).
+  exit 0
 }
 
 # ==============================================================================
@@ -4362,7 +4365,7 @@ build_container() {
   fi
 
   # MAC
-  if [[ -n "$MAC" ]]; then
+  if [[ -n "${MAC:-}" ]]; then
     case "$MAC" in
     ,hwaddr=*) NET_STRING+="$MAC" ;;
     *) NET_STRING+=",hwaddr=$MAC" ;;
@@ -4373,7 +4376,7 @@ build_container() {
   NET_STRING+=",ip=${NET:-dhcp}"
 
   # Gateway
-  if [[ -n "$GATE" ]]; then
+  if [[ -n "${GATE:-}" ]]; then
     case "$GATE" in
     ,gw=) ;;
     ,gw=*) NET_STRING+="$GATE" ;;
@@ -4382,7 +4385,7 @@ build_container() {
   fi
 
   # VLAN
-  if [[ -n "$VLAN" ]]; then
+  if [[ -n "${VLAN:-}" ]]; then
     case "$VLAN" in
     ,tag=*) NET_STRING+="$VLAN" ;;
     *) NET_STRING+=",tag=$VLAN" ;;
@@ -4390,7 +4393,7 @@ build_container() {
   fi
 
   # MTU
-  if [[ -n "$MTU" ]]; then
+  if [[ -n "${MTU:-}" ]]; then
     case "$MTU" in
     ,mtu=*) NET_STRING+="$MTU" ;;
     *) NET_STRING+=",mtu=$MTU" ;;
@@ -4398,7 +4401,7 @@ build_container() {
   fi
 
   # IPv6 Handling
-  case "$IPV6_METHOD" in
+  case "${IPV6_METHOD:-none}" in
   auto) NET_STRING="$NET_STRING,ip6=auto" ;;
   dhcp) NET_STRING="$NET_STRING,ip6=dhcp" ;;
   static)

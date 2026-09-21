@@ -134,6 +134,11 @@ function update_script() {
 }
 
 start
+# start() already exits after an in-container update. Guard anyway so a
+# leftover/old build.func cannot fall through into pct create.
+if ! command -v pveversion >/dev/null 2>&1; then
+  exit 0
+fi
 build_container
 description
 
