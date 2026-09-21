@@ -1,0 +1,17 @@
+/* Infra-Monitor — tokens from design-system-ref-agentic-builder.html */
+:root {
+  --brand-500: #D97757;
+  --brand-600: #D0572F;
+  --brand-deep: #7D422E;
+  --bg: #121212;
+  --surface-1: #191917;
+  --surface-2: #262624;
+  --fg-1: #F3F3F3;
+  --fg-2: #D8D8D8;
+  --fg-3: #D7D7D7;
+  --fg-muted: #616161;
+  --border: #777777;
+  --success: #29E0A9;
+  --danger: #C63131;
+  --info: #4B73FF;
+}

@@ -120,6 +120,16 @@ function update_script() {
   header_info
   check_container_storage
   check_container_resources
+  # Fallback if remote tools.func is outdated
+  if ! declare -f run_os_update >/dev/null 2>&1; then
+    run_os_update() {
+      if [[ -f /etc/alpine-release ]] || [[ "${PCT_OSTYPE:-}" == "alpine" ]] || [[ "${var_os:-}" == "alpine" ]]; then
+        update_alpine
+      else
+        update_deb_based
+      fi
+    }
+  fi
   run_os_update
 }
 

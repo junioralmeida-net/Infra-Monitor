@@ -10291,3 +10291,27 @@ setup_nltk() {
 
   return $rc
 }
+
+# ------------------------------------------------------------------------------
+# run_os_update()
+#
+# - Dispatches to update_deb_based() or update_alpine() defined by the ct script
+# - Used when /usr/bin/update (or host pct exec) re-runs the ct script inside the LXC
+# ------------------------------------------------------------------------------
+run_os_update() {
+  if [[ -f /etc/alpine-release ]] || [[ "${PCT_OSTYPE:-}" == "alpine" ]] || [[ "${var_os:-}" == "alpine" ]]; then
+    if declare -f update_alpine >/dev/null 2>&1; then
+      update_alpine
+    else
+      msg_error "update_alpine() is not defined in the application script"
+      exit 127
+    fi
+  else
+    if declare -f update_deb_based >/dev/null 2>&1; then
+      update_deb_based
+    else
+      msg_error "update_deb_based() is not defined in the application script"
+      exit 127
+    fi
+  fi
+}

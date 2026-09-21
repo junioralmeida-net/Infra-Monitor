@@ -35,3 +35,12 @@ vm/*.bak
 json/
 json/*.bak
 json/*.tmp
+
+# Local notes / credentials (never commit)
+Doc/
+Doc/LeiameJR.txt
+**/LeiameJR.txt
+.env
+.env.*
+*.pem
+*_token*

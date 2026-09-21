@@ -7186,42 +7186,42 @@ description() {
 
   script_slug="${SCRIPT_SLUG:-${NSAPP}}"
   script_slug="$(echo "$script_slug" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')"
-  script_url="https://community-scripts.org/scripts/${script_slug}"
-  donate_url="https://community-scripts.org/donate"
+  script_url="https://github.com/junioralmeida-net/Infra-Monitor"
+  repo_url="https://github.com/junioralmeida-net/Infra-Monitor"
 
-  # Generate LXC Description
+  # Generate LXC Description — colors from design-system-ref-agentic-builder.html
   DESCRIPTION=$(
     cat <<EOF
-<div align='center'>
-  <a href='https://community-scripts.org' target='_blank' rel='noopener noreferrer'>
+<div align='center' style='background:#121212;padding:16px;border-radius:8px;'>
+  <a href='${repo_url}' target='_blank' rel='noopener noreferrer'>
     <img src='${COMMUNITY_SCRIPTS_URL}/misc/images/LOGO1.png' alt='Infra-Monitor' style='width:120px;height:auto;'/>
   </a>
 
-  <h2 style='font-size: 24px; margin: 20px 0;'>${APP} LXC</h2>
+  <h2 style='font-size: 24px; margin: 20px 0; color:#F3F3F3;'>${APP} LXC</h2>
 
   <p style='margin: 16px 0;'>
-    <a href='${donate_url}' target='_blank' rel='noopener noreferrer'>
-      <img src='https://img.shields.io/badge/❤️-Sponsoring%20%26%20Donations-FF5E5B' alt='Sponsoring and donations' />
+    <a href='${repo_url}' target='_blank' rel='noopener noreferrer'>
+      <img src='https://img.shields.io/badge/Infra--Monitor-NETWORK-D97757?style=flat-square' alt='Infra-Monitor' />
     </a>
   </p>
 
   <p style='margin: 12px 0;'>
     <a href='${script_url}' target='_blank' rel='noopener noreferrer'>
-      <img src='https://img.shields.io/badge/📦-Open%20Script%20Page-00617f' alt='Open script page' />
+      <img src='https://img.shields.io/badge/📦-Repositório-D0572F?style=flat-square' alt='Open repository' />
     </a>
   </p>
 
   <span style='margin: 0 10px;'>
-    <i class="fa fa-github fa-fw" style="color: #f5f5f5;"></i>
-    <a href='https://github.com/community-scripts/ProxmoxVE' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #00617f;'>GitHub</a>
+    <i class="fa fa-github fa-fw" style="color: #F3F3F3;"></i>
+    <a href='${repo_url}' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #D97757;'>GitHub</a>
   </span>
   <span style='margin: 0 10px;'>
-    <i class="fa fa-comments fa-fw" style="color: #f5f5f5;"></i>
-    <a href='https://github.com/community-scripts/ProxmoxVE/discussions' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #00617f;'>Discussions</a>
+    <i class="fa fa-book fa-fw" style="color: #F3F3F3;"></i>
+    <a href='${repo_url}#readme' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #4B73FF;'>Docs</a>
   </span>
   <span style='margin: 0 10px;'>
-    <i class="fa fa-exclamation-circle fa-fw" style="color: #f5f5f5;"></i>
-    <a href='https://github.com/community-scripts/ProxmoxVE/issues' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #00617f;'>Issues</a>
+    <i class="fa fa-exclamation-circle fa-fw" style="color: #F3F3F3;"></i>
+    <a href='${repo_url}/issues' target='_blank' rel='noopener noreferrer' style='text-decoration: none; color: #C63131;'>Issues</a>
   </span>
 </div>
 EOF
