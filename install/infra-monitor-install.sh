@@ -12,11 +12,34 @@ setting_up_container
 network_check
 update_os
 
+apply_webui_ptbr() {
+  msg_info "Adding Português (Brasil) to the WebUI language menu"
+  if ! command -v python3 >/dev/null 2>&1; then
+    if [[ -f /etc/alpine-release ]]; then
+      $STD apk add --no-cache python3
+    elif command -v apt-get >/dev/null 2>&1; then
+      $STD apt-get install -y -qq python3
+    fi
+  fi
+  local i18n_dir=""
+  if [[ -n "${COMMUNITY_SCRIPTS_ROOT:-}" && -f "${COMMUNITY_SCRIPTS_ROOT}/misc/i18n/apply-pt-br.py" ]]; then
+    i18n_dir="${COMMUNITY_SCRIPTS_ROOT}/misc/i18n"
+  else
+    i18n_dir="$(mktemp -d)"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.json" -o "${i18n_dir}/pt_BR.json"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.toml" -o "${i18n_dir}/pt_BR.toml"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/apply-pt-br.py" -o "${i18n_dir}/apply-pt-br.py"
+  fi
+  python3 "${i18n_dir}/apply-pt-br.py" /opt/rustdesk-api /opt/rustdesk
+  msg_ok "Português (Brasil) available in Language menu"
+}
+
 setup_deb_based() {
   fetch_and_deploy_gh_release "rustdesk-hbbr" "lejianwen/rustdesk-server" "binary" "latest" "/opt/rustdesk" "rustdesk-server-hbbr*$(arch_resolve).deb"
   fetch_and_deploy_gh_release "rustdesk-hbbs" "lejianwen/rustdesk-server" "binary" "latest" "/opt/rustdesk" "rustdesk-server-hbbs*$(arch_resolve).deb"
   fetch_and_deploy_gh_release "rustdesk-utils" "lejianwen/rustdesk-server" "binary" "latest" "/opt/rustdesk" "rustdesk-server-utils*$(arch_resolve).deb"
   fetch_and_deploy_gh_release "rustdesk-api" "lejianwen/rustdesk-api" "binary" "latest" "/opt/rustdesk" "rustdesk-api-server*$(arch_resolve).deb"
+  apply_webui_ptbr
   systemctl enable -q --now rustdesk-hbbr
   systemctl enable -q --now rustdesk-hbbs
   systemctl enable -q --now rustdesk-api
@@ -117,6 +140,8 @@ EOF
   $STD rc-update add rustdesk-server-hbbr default
   $STD rc-update add rustdesk-api default
   msg_ok "Enabled Infra-Monitor Services"
+
+  apply_webui_ptbr
 
   msg_info "Starting Infra-Monitor"
   $STD service rustdesk-server-hbbs start

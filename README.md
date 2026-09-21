@@ -56,7 +56,9 @@ var_os='debian' bash ct/infra-monitor.sh
 
 Siga o modo **Default** ou **Advanced** e aguarde o fim da instalação.
 
-### Acesso
+No WebUI (`:21114`), o menu de **Language** inclui **Português (Brasil)** para traduzir a interface em pt-BR.
+
+## Acesso
 
 ```text
 http://<IP-DO-LXC>:21114

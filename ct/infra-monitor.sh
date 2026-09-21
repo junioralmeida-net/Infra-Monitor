@@ -63,6 +63,16 @@ update_deb_based() {
     fetch_and_deploy_gh_release "rustdesk-utils" "lejianwen/rustdesk-server" "binary" "latest" "/opt/rustdesk" "rustdesk-server-utils*$(arch_resolve).deb"
     fetch_and_deploy_gh_release "rustdesk-api" "lejianwen/rustdesk-api" "binary" "latest" "/opt/rustdesk" "rustdesk-api-server*$(arch_resolve).deb"
 
+    if [[ -f "${COMMUNITY_SCRIPTS_ROOT:-}/misc/i18n/apply-pt-br.py" ]]; then
+      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/i18n/apply-pt-br.py" /opt/rustdesk /opt/rustdesk-api || true
+    else
+      _i18n_tmp="$(mktemp -d)"
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/apply-pt-br.py" -o "${_i18n_tmp}/apply-pt-br.py"
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.json" -o "${_i18n_tmp}/pt_BR.json"
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.toml" -o "${_i18n_tmp}/pt_BR.toml"
+      python3 "${_i18n_tmp}/apply-pt-br.py" /opt/rustdesk /opt/rustdesk-api || true
+    fi
+
     msg_info "Starting services"
     systemctl start -q rustdesk-*
     msg_ok "Services started"
@@ -106,6 +116,14 @@ update_alpine() {
     $STD tar zxvf "$temp_file2"
     cp -r release/* /opt/rustdesk-api
     echo "${APIRELEASE}" >~/.rustdesk-api
+    if [[ -f "${COMMUNITY_SCRIPTS_ROOT:-}/misc/i18n/apply-pt-br.py" ]]; then
+      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/i18n/apply-pt-br.py" /opt/rustdesk-api /opt/rustdesk || true
+    else
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/apply-pt-br.py" -o /tmp/apply-pt-br.py
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.json" -o /tmp/pt_BR.json
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.toml" -o /tmp/pt_BR.toml
+      python3 /tmp/apply-pt-br.py /opt/rustdesk-api /opt/rustdesk || true
+    fi
     $STD service rustdesk-api start
     rm -rf release
     rm -f "$temp_file2"
