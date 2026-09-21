@@ -1,0 +1,447 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sentinela (novo) - Portal Gateway</title>
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#dc2626">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-72x72.png">
+
+  <link rel="stylesheet" href="/css/style.css?v=202608151237">
+
+  <!-- VAPID Public Key para Push Notifications -->
+  <script>
+    window.PORTAL_VAPID_PUBLIC_KEY = 'BMYCdA5A5Jytsf83zqgXldm1ChdlaQV30uUTaH17AdwVtLRKGjrgVqpLoQVGPIps4DSD9cs3jcAZcVO9YzQsKDs';
+    // Origem confiável do módulo embedado em modo DIRETO (cross-origin).
+    // Derivada server-side do targetUrl cadastrado no registry de módulos.
+    // O notification-manager só processa postMessage vindo de same-origin
+    // ou de uma origem presente nesta lista.
+    window.PORTAL_TRUSTED_MODULE_ORIGINS = ["https://sentinela-app.grupohiperfarma.com.br"];
+  </script>
+
+  <style>
+    .icon-svg {
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    .module-iframe-container {
+      position: fixed;
+      top: 0;
+      left: 300px;
+      right: 0;
+      bottom: 0;
+      background: white;
+      transition: left 0.3s ease;
+      z-index: 100;
+    }
+
+    body.sidebar-collapsed .module-iframe-container {
+      left: 70px;
+    }
+
+    .module-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      position: relative;
+      z-index: 100;
+    }
+
+    .module-loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    .module-loading .spinner {
+      font-size: 48px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .module-iframe-container {
+        left: 0 !important;
+        top: 44px; /* Altura do menu mobile: 6px top + 32px botão + 6px margem */
+        transition: top 0.3s ease;
+        z-index: 50; /* Abaixo do botão menu (z-index: 10000) */
+      }
+      .module-iframe-container.expanded {
+        top: 0; /* Tela cheia quando menu esconde ao rolar */
+      }
+      .module-iframe {
+        z-index: 50; /* Garantir que iframe não bloqueie o menu */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    
+    <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+<button class="sidebar-toggle-btn" id="sidebarCollapseBtn" title="Expandir/Recolher">
+  <span id="toggleIcon">⇦</span>
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Botão Voltar ao Topo (Mobile) -->
+<button class="scroll-to-top" id="scrollToTopBtn" title="Voltar ao topo">↑</button>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="/dashboard" class="sidebar-brand">
+      <svg class="logo-icon" xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1066 983' fill='currentColor'><g><path d='M 185.27 936.84 C170.69,924.43 139.77,893.30 126.84,878.00 C97.50,843.27 75.20,809.27 55.02,768.50 C-17.65,621.68 -18.41,449.03 52.94,301.44 C79.77,245.97 111.81,201.08 156.44,156.44 C178.40,134.48 193.51,121.31 215.48,104.95 C333.51,17.06 482.62,-17.67 629.00,8.63 C718.89,24.79 803.26,64.53 876.02,125.02 C892.07,138.36 927.64,173.93 940.98,189.98 C1001.47,262.74 1041.21,347.11 1057.37,437.00 C1077.82,550.80 1061.69,666.04 1010.98,768.50 C984.10,822.81 953.22,865.82 910.05,909.09 C894.53,924.64 871.09,946.00 869.54,946.00 C869.31,946.00 872.10,942.06 875.74,937.25 C884.68,925.43 903.22,897.10 911.23,883.00 C953.05,809.42 978.02,725.03 983.96,637.17 C985.28,617.67 985.28,576.80 983.96,558.00 C975.17,432.78 929.65,318.53 853.47,230.50 C840.42,215.42 812.73,187.99 799.00,176.55 C733.01,121.53 656.79,88.33 575.80,79.35 C556.76,77.23 513.18,76.97 494.50,78.86 C411.96,87.20 334.03,120.66 267.00,176.55 C253.27,187.99 225.58,215.42 212.53,230.50 C113.59,344.82 66.87,503.49 84.57,665.00 C92.90,740.96 117.55,817.51 154.77,883.00 C162.78,897.10 181.32,925.43 190.26,937.25 C193.90,942.06 196.69,946.00 196.46,946.00 C196.23,946.00 191.19,941.88 185.27,936.84 ZM 394.67 895.33 C393.23,893.89 394.21,888.09 399.45,867.20 C408.70,830.31 409.46,825.07 409.42,798.00 C409.40,776.40 409.18,773.48 406.72,761.90 C399.23,726.59 384.47,699.99 358.77,675.45 C322.89,641.19 274.81,620.50 183.50,600.04 C165.90,596.10 150.88,592.26 150.12,591.52 C148.95,590.37 149.64,589.71 154.62,587.20 C163.43,582.75 190.03,572.41 222.00,561.01 C261.85,546.79 295.57,532.76 322.97,519.02 L 332.86 514.05 L 331.46 510.28 C320.29,480.21 283.00,375.42 283.00,374.09 C283.00,371.85 285.70,369.46 289.14,368.64 C294.84,367.29 301.35,371.01 327.50,390.60 C414.25,455.59 467.99,527.07 487.50,603.47 C509.62,690.09 491.63,792.03 443.15,854.65 C429.62,872.13 416.49,884.63 403.38,892.53 C397.58,896.02 395.90,896.56 394.67,895.33 ZM 662.67 892.56 C649.51,884.63 636.39,872.15 622.85,854.65 C577.02,795.44 557.99,699.14 575.61,615.65 C580.80,591.09 587.72,571.51 600.04,546.50 C627.33,491.11 673.07,439.61 738.50,390.60 C764.65,371.01 771.16,367.29 776.86,368.64 C780.30,369.46 783.00,371.85 783.00,374.09 C783.00,375.42 745.71,480.21 734.54,510.28 L 733.14 514.05 L 743.03 519.02 C770.43,532.76 804.15,546.79 844.00,561.01 C875.97,572.41 902.57,582.75 911.38,587.20 C916.36,589.71 917.05,590.37 915.88,591.52 C915.12,592.26 900.10,596.10 882.50,600.04 C791.19,620.50 743.11,641.19 707.23,675.45 C681.51,700.00 666.70,726.72 659.29,761.91 C656.87,773.41 656.64,776.53 656.60,798.00 C656.54,825.10 657.28,830.24 666.60,867.40 C672.12,889.42 672.82,895.23 669.99,895.77 C669.16,895.93 665.86,894.48 662.67,892.56 ZM 183.64 518.48 C142.39,508.03 123.78,459.61 147.61,424.73 C159.33,407.59 177.43,397.98 197.96,398.01 C225.49,398.06 248.26,414.54 256.66,440.50 C260.14,451.26 260.30,466.10 257.04,476.50 C251.06,495.56 236.59,510.28 217.02,517.22 C209.57,519.87 191.76,520.54 183.64,518.48 ZM 857.00 519.31 C840.93,516.62 823.46,504.45 815.02,490.07 C809.02,479.85 806.77,471.40 806.76,459.00 C806.75,442.95 811.60,429.92 821.84,418.50 C834.06,404.87 849.44,398.05 868.04,398.01 C888.57,397.98 906.67,407.59 918.39,424.73 C942.34,459.79 923.31,508.70 881.91,518.46 C875.99,519.85 862.92,520.30 857.00,519.31 Z'/></g></svg>
+      <span class="brand-text">Portal Gateway</span>
+    </a>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="/dashboard" class="nav-item ">
+      <span class="icon"><svg class="icon-svg" xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'><path d='M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z'/></svg></span>
+      <span>Dashboard</span>
+    </a>
+
+    
+
+    
+      
+
+      
+
+      
+        <div class="nav-section">
+          <div class="nav-section-title">Módulos</div>
+          
+            <a href="/app/docs" class="nav-item ">
+              <span class="icon"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+  <path d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27m.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0z"/>
+  <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5"/>
+</svg></span>
+              <span>Plataforma DOCs</span>
+            </a>
+          
+            <a href="/app/relatorios" class="nav-item ">
+              <span class="icon"><svg class="icon-svg" xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'><path d='M22 21H2V3h2v16h2V10h4v9h2V6h4v13h2V14h4v7z'/></svg></span>
+              <span>Relatórios</span>
+            </a>
+          
+            <a href="/app/sentinela" class="nav-item ">
+              <span class="icon"><svg class="icon-svg" xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'><path d='M21 19v1H3v-1l2-2v-6c0-3.1 2.03-5.83 5-6.71V4a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.29c2.97.88 5 3.61 5 6.71v6l2 2m-7 2a2 2 0 0 1-2 2 2 2 0 0 1-2-2'/></svg></span>
+              <span>Sentinela</span>
+            </a>
+          
+            <a href="/app/sentinela-novo" class="nav-item active">
+              <span class="icon"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+  <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
+</svg></span>
+              <span>Sentinela (novo)</span>
+            </a>
+          
+        </div>
+      
+    
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="/profile" class="user-info" style="text-decoration: none; color: inherit; cursor: pointer;">
+      <div class="user-avatar">
+        
+          👤
+        
+      </div>
+      <div class="user-details">
+        <div class="user-name">Denizar Pereira de Almeida Júnior</div>
+        <div class="user-role">TI</div>
+      </div>
+    </a>
+    <a href="/logout" class="btn-logout desktop-only">Sair</a>
+  </div>
+</aside>
+
+<script>
+function toggleSidebar() {
+  try {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    const iframeContainer = document.querySelector('.module-iframe-container');
+
+    if (!sidebar) {
+      console.error('Sidebar element not found!');
+      return;
+    }
+    if (!overlay) {
+      console.error('Overlay element not found!');
+      return;
+    }
+
+    const isOpening = !sidebar.classList.contains('active');
+
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+
+    // Desabilitar interação com iframe quando sidebar está aberta
+    if (iframeContainer) {
+      iframeContainer.style.pointerEvents = isOpening ? 'none' : 'auto';
+    }
+
+    // Forçar repaint em mobile para garantir que a sidebar apareça
+    sidebar.offsetHeight;
+
+    console.log('Sidebar toggled, active:', sidebar.classList.contains('active'));
+  } catch (e) {
+    console.error('Error in toggleSidebar:', e);
+  }
+}
+
+function toggleSidebarCollapse() {
+  const sidebar = document.getElementById('sidebar');
+  const body = document.body;
+  const icon = document.getElementById('toggleIcon');
+  
+  sidebar.classList.toggle('collapsed');
+  body.classList.toggle('sidebar-collapsed');
+  
+  // Salvar estado no localStorage
+  const isCollapsed = sidebar.classList.contains('collapsed');
+  localStorage.setItem('sidebarCollapsed', isCollapsed);
+  
+  // Mudar ícone
+  icon.textContent = isCollapsed ? '⇨' : '⇦';
+}
+
+// Restaurar estado ao carregar e configurar event listeners
+document.addEventListener('DOMContentLoaded', function() {
+  // ============ Configurar Event Listeners (evita CSP blocking) ============
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const sidebarCollapseBtn = document.getElementById('sidebarCollapseBtn');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+  const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', toggleSidebar);
+    mobileMenuBtn.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      toggleSidebar();
+    });
+  }
+
+  if (sidebarCollapseBtn) {
+    sidebarCollapseBtn.addEventListener('click', toggleSidebarCollapse);
+  }
+
+  if (sidebarOverlay) {
+    sidebarOverlay.addEventListener('click', toggleSidebar);
+  }
+
+  if (scrollToTopBtn) {
+    scrollToTopBtn.addEventListener('click', scrollToTop);
+  }
+
+  // ============ Restaurar estado collapsed ============
+  const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+  if (isCollapsed) {
+    const sidebar = document.getElementById('sidebar');
+    const body = document.body;
+    const icon = document.getElementById('toggleIcon');
+
+    sidebar.classList.add('collapsed');
+    body.classList.add('sidebar-collapsed');
+    icon.textContent = '⇨';
+  }
+
+  // ============ Controle Menu/Botão Scroll (Mobile) ============
+  if (window.innerWidth <= 768) {
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    const scrollBtn = document.getElementById('scrollToTopBtn');
+    let menuHidden = false;
+
+    // Verificar se estamos em uma página com iframe
+    const hasIframe = document.querySelector('.module-iframe-container') !== null;
+
+    // Referência ao container do iframe (se existir)
+    const iframeContainer = document.querySelector('.module-iframe-container');
+
+    // Função para esconder menu e mostrar botão scroll
+    function hideMenuShowScroll() {
+      if (!menuHidden && menuBtn && scrollBtn) {
+        menuBtn.classList.add('hidden');
+        scrollBtn.classList.add('visible');
+        if (iframeContainer) iframeContainer.classList.add('expanded');
+        menuHidden = true;
+      }
+    }
+
+    // Função para mostrar menu e esconder botão scroll
+    function showMenuHideScroll() {
+      if (menuHidden && menuBtn && scrollBtn) {
+        menuBtn.classList.remove('hidden');
+        scrollBtn.classList.remove('visible');
+        if (iframeContainer) iframeContainer.classList.remove('expanded');
+        menuHidden = false;
+      }
+    }
+
+    // ============ PARA IFRAMES: Comunicação via postMessage ============
+    if (hasIframe) {
+      // Listener para mensagens vindas do iframe
+      window.addEventListener('message', function(event) {
+        // Verificar se é a mensagem de scroll do módulo
+        if (event.data && event.data.type === 'PORTAL_SCROLL_UPDATE') {
+          if (event.data.isScrolled === true) {
+            hideMenuShowScroll();
+          } else if (event.data.isScrolled === false) {
+            showMenuHideScroll();
+          }
+        }
+      });
+    }
+    // ============ PARA PÁGINAS SEM IFRAME: Scroll detection normal ============
+    else {
+      // Detectar container de scroll
+      const scrollContainer = document.querySelector('.main-content') ||
+                              document.querySelector('.content-body') ||
+                              document.body;
+
+      // Função para controlar visibilidade baseado no scroll
+      function handleScroll() {
+        const currentScroll = (scrollContainer === window || scrollContainer === document.body)
+          ? window.scrollY || document.documentElement.scrollTop
+          : scrollContainer.scrollTop;
+
+        if (currentScroll > 100) {
+          hideMenuShowScroll();
+        } else {
+          showMenuHideScroll();
+        }
+      }
+
+      // Adicionar listener no container de scroll
+      if (scrollContainer && scrollContainer !== document.body) {
+        scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+      }
+
+      // Também no window
+      window.addEventListener('scroll', handleScroll, { passive: true });
+
+      // Guardar referência para scrollToTop
+      window._portalScrollContainer = scrollContainer;
+    }
+
+    // Guardar funções globais
+    window._portalMenuHidden = function() { return menuHidden; };
+    window._portalSetMenuHidden = function(val) { menuHidden = val; };
+    window._portalShowMenu = showMenuHideScroll;
+    window._portalHideMenu = hideMenuShowScroll;
+  }
+});
+
+// Função para voltar ao topo
+function scrollToTop() {
+  const menuBtn = document.querySelector('.mobile-menu-btn');
+  const scrollBtn = document.getElementById('scrollToTopBtn');
+
+  // Mostrar menu e esconder botão (de forma robusta)
+  if (menuBtn) menuBtn.classList.remove('hidden');
+  if (scrollBtn) scrollBtn.classList.remove('visible');
+
+  // Remover classe expanded do iframe container
+  const iframeContainer = document.querySelector('.module-iframe-container');
+  if (iframeContainer) iframeContainer.classList.remove('expanded');
+
+  // Atualizar estado via função global
+  if (window._portalShowMenu) {
+    window._portalShowMenu();
+  } else if (window._portalSetMenuHidden) {
+    window._portalSetMenuHidden(false);
+  }
+
+  // Rolar o container correto (para páginas sem iframe)
+  const scrollContainer = window._portalScrollContainer || document.body;
+  if (scrollContainer && scrollContainer !== document.body && scrollContainer !== window) {
+    scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Sempre tentar rolar window também
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Para iframes: enviar comando CMD_SCROLL_TO_TOP
+  const iframe = document.getElementById('moduleFrame');
+  if (iframe && iframe.contentWindow) {
+    try {
+      iframe.contentWindow.postMessage({ type: 'CMD_SCROLL_TO_TOP' }, '*');
+    } catch (e) {
+      // Silenciar erros de cross-origin
+    }
+  }
+}
+</script>
+
+
+    <!-- Module Content in Iframe (Direct Mode - No Proxy) -->
+    <div class="module-iframe-container">
+      <div class="module-loading" id="loading">
+        <div class="spinner">⏳</div>
+        <p>Carregando Sentinela (novo)...</p>
+      </div>
+      <iframe
+        id="moduleFrame"
+        class="module-iframe"
+        src="https://sentinela-app.grupohiperfarma.com.br"
+        title="Sentinela (novo)"
+        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals allow-downloads allow-top-navigation allow-popups-to-escape-sandbox"
+        allow="notifications"
+        >
+      </iframe>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      // Esconder loading quando iframe carregar
+      document.getElementById('moduleFrame').addEventListener('load', function() {
+        document.getElementById('loading').style.display = 'none';
+      });
+
+      console.log('📱 Módulo carregado em modo DIRETO (sem proxy)');
+      console.log('   Nome: Sentinela (novo)');
+      console.log('   URL: https://sentinela-app.grupohiperfarma.com.br');
+      console.log('   ✅ Iframe aponta diretamente para o servidor');
+    })();
+  </script>
+
+  <!-- Notification Manager para comunicação com iframes -->
+  <script src="/js/notification-manager.js?v=202608151237"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4eeb46b965e94c56a83e1d8ad63db558","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>
