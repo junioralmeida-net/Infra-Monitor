@@ -147,11 +147,19 @@ def copy_backend(toml_src: Path, roots: list[Path]) -> None:
 
 
 def set_config_lang(roots: list[Path]) -> None:
+    brand = "NETWORK Informática  ·  Infra-Monitor"
     for root in roots:
         for cfg in root.rglob("config.yaml"):
             text = cfg.read_text(encoding="utf-8", errors="replace")
             new, n = re.subn(r'(?m)^lang:\s*["\']?[\w.-]+["\']?', 'lang: "pt-BR"', text, count=1)
-            if n:
+            new, n2 = re.subn(
+                r'(?m)^(\s*title:\s*)(["\']?)(Rustdesk API Admin|RustDesk API Admin|Infra-Monitor|NETWORK Informática  ·  Infra-Monitor)\2',
+                rf'\1"{brand}"',
+                new,
+                count=1,
+            )
+            if n or n2:
+                cfg.unlink(missing_ok=True)
                 cfg.write_text(new, encoding="utf-8")
 
 
