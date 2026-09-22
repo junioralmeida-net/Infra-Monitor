@@ -179,12 +179,32 @@ img.lang-icon {
   background: #1a202e !important;
 }
 
-.el-button--primary {
-  --el-button-bg-color: #e46000;
-  --el-button-border-color: #e46000;
-  --el-button-hover-bg-color: #f08000;
-  --el-button-hover-border-color: #f08000;
-  --el-button-active-bg-color: #b85209;
+.el-button--primary,
+.login-button.el-button--primary,
+.login-card .el-button--primary {
+  --el-button-bg-color: #e46000 !important;
+  --el-button-border-color: #e46000 !important;
+  --el-button-hover-bg-color: #f08000 !important;
+  --el-button-hover-border-color: #f08000 !important;
+  --el-button-active-bg-color: #b85209 !important;
+  --el-button-text-color: #ffffff !important;
+  background-color: #e46000 !important;
+  border-color: #e46000 !important;
+  color: #ffffff !important;
+}
+
+.el-button--primary:hover,
+.el-button--primary:focus,
+.login-button.el-button--primary:hover,
+.login-button.el-button--primary:focus {
+  background-color: #f08000 !important;
+  border-color: #f08000 !important;
+  color: #ffffff !important;
+}
+
+.el-button--primary:active {
+  background-color: #b85209 !important;
+  border-color: #b85209 !important;
 }
 
 .el-button--danger {

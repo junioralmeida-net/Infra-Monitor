@@ -32,6 +32,8 @@ apply_webui_ptbr() {
     mkdir -p "${i18n_dir}/images"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-network-logo.py" -o "${i18n_dir}/apply-network-logo.py"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/logo-webui.png" -o "${i18n_dir}/images/logo-webui.png"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/favicon.ico" -o "${i18n_dir}/images/favicon.ico"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/favicon.png" -o "${i18n_dir}/images/favicon.png"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-lang-menu-ptbr.py" -o "${i18n_dir}/apply-lang-menu-ptbr.py"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/idioma.png" -o "${i18n_dir}/images/idioma.png"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-hello-ptbr.py" -o "${i18n_dir}/apply-hello-ptbr.py"
