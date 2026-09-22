@@ -66,6 +66,8 @@ update_deb_based() {
     if [[ -f "${COMMUNITY_SCRIPTS_ROOT:-}/misc/apply-pt-br.py" ]]; then
       python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-pt-br.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
       python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-network-logo.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
+      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-lang-menu-ptbr.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
+      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-hello-ptbr.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
     else
       _i18n_tmp="$(mktemp -d)"
       mkdir -p "${_i18n_tmp}/images"
@@ -74,8 +76,14 @@ update_deb_based() {
       curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.toml" -o "${_i18n_tmp}/pt_BR.toml"
       curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-network-logo.py" -o "${_i18n_tmp}/apply-network-logo.py"
       curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/logo-webui.png" -o "${_i18n_tmp}/images/logo-webui.png"
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-lang-menu-ptbr.py" -o "${_i18n_tmp}/apply-lang-menu-ptbr.py"
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/idioma.jpeg" -o "${_i18n_tmp}/images/idioma.jpeg"
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-hello-ptbr.py" -o "${_i18n_tmp}/apply-hello-ptbr.py"
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/hello.html" -o "${_i18n_tmp}/hello.html"
       python3 "${_i18n_tmp}/apply-pt-br.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
       python3 "${_i18n_tmp}/apply-network-logo.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
+      python3 "${_i18n_tmp}/apply-lang-menu-ptbr.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
+      python3 "${_i18n_tmp}/apply-hello-ptbr.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
     fi
 
     msg_info "Starting services"
@@ -124,6 +132,8 @@ update_alpine() {
     if [[ -f "${COMMUNITY_SCRIPTS_ROOT:-}/misc/apply-pt-br.py" ]]; then
       python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-pt-br.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
       python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-network-logo.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
+      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-lang-menu-ptbr.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
+      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-hello-ptbr.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
     else
       curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-pt-br.py" -o /tmp/apply-pt-br.py
       curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.json" -o /tmp/pt_BR.json
@@ -131,8 +141,14 @@ update_alpine() {
       mkdir -p /tmp/images
       curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-network-logo.py" -o /tmp/apply-network-logo.py
       curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/logo-webui.png" -o /tmp/images/logo-webui.png
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-lang-menu-ptbr.py" -o /tmp/apply-lang-menu-ptbr.py
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/idioma.jpeg" -o /tmp/images/idioma.jpeg
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-hello-ptbr.py" -o /tmp/apply-hello-ptbr.py
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/hello.html" -o /tmp/hello.html
       python3 /tmp/apply-pt-br.py /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
       python3 /tmp/apply-network-logo.py /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
+      python3 /tmp/apply-lang-menu-ptbr.py /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
+      python3 /tmp/apply-hello-ptbr.py /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
     fi
     $STD service rustdesk-api start
     rm -rf release

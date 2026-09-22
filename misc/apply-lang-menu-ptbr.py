@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Translate rustdesk-api WebUI language menu labels to Portuguese."""
+"""Translate rustdesk-api WebUI language menu labels and replace the globe SVG."""
 from __future__ import annotations
 
 import re
@@ -20,12 +20,10 @@ _NAME = re.compile(
     r'(name:")(' + "|".join(re.escape(k) for k in LANG_NAMES) + r')(")'
 )
 
-
-_TRIGGER = 'default:o(()=>[m[2]||(m[2]=h("div",{class:"title"}'
-_TRIGGER_END = "],-1))]),_:1})"
-_TRIGGER_TEXT = (
-    'default:o(()=>[h("div",{class:"title"},[h("span",{class:"nickname"},'
-    'v(g(L)("ChangeLang")),1)])]),_:1})'
+_LANG_ICON = re.compile(
+    r'h\("i",\{class:"el-icon el-tooltip__trigger",style:\{"font-size":"24px"\}\},'
+    r'\[h\("svg",\{preserveAspectRatio:"xMidYMid meet",viewBox:"0 0 24 24",'
+    r'width:"1\.2em",height:"1\.2em"\},\[h\("path",\{fill:"currentColor",d:"[^"]+"\}\)\]\)\]\)'
 )
 _LANG_SVG = re.compile(
     r'h\("svg",\{preserveAspectRatio:"xMidYMid meet",viewBox:"0 0 24 24",'
@@ -48,6 +46,9 @@ def _replace_names(text: str) -> str:
 def _replace_icon(text: str) -> str:
     if "idioma.jpeg" in text and "lang-icon" in text:
         return text
+    updated, n = _LANG_ICON.subn(_LANG_IMG, text, count=1)
+    if n:
+        return updated
     return _LANG_SVG.sub(_LANG_IMG, text, count=1)
 
 
@@ -69,7 +70,7 @@ def _copy_icon(root: Path) -> bool:
 
 
 def main() -> int:
-    roots = [Path(p) for p in sys.argv[1:] or ("/opt/rustdesk-api", "/opt/rustdesk", "/tmp/infra-monitor-run/api")]
+    roots = [Path(p) for p in sys.argv[1:] or ("/opt/rustdesk-api", "/opt/rustdesk", "/tmp/infra-monitor-run")]
     n = 0
     for root in roots:
         if not root.exists():

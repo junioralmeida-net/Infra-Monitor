@@ -32,6 +32,10 @@ apply_webui_ptbr() {
     mkdir -p "${i18n_dir}/images"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-network-logo.py" -o "${i18n_dir}/apply-network-logo.py"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/logo-webui.png" -o "${i18n_dir}/images/logo-webui.png"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-lang-menu-ptbr.py" -o "${i18n_dir}/apply-lang-menu-ptbr.py"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/idioma.jpeg" -o "${i18n_dir}/images/idioma.jpeg"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-hello-ptbr.py" -o "${i18n_dir}/apply-hello-ptbr.py"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/hello.html" -o "${i18n_dir}/hello.html"
   fi
   local -a roots=()
   local candidate=""
@@ -55,6 +59,18 @@ apply_webui_ptbr() {
     python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-network-logo.py" "${roots[@]}" || true
   fi
   msg_ok "NETWORK logo (LOGO4) applied"
+  if [[ -f "${i18n_dir}/apply-lang-menu-ptbr.py" ]]; then
+    python3 "${i18n_dir}/apply-lang-menu-ptbr.py" "${roots[@]}" || true
+  elif [[ -f "${COMMUNITY_SCRIPTS_ROOT:-}/misc/apply-lang-menu-ptbr.py" ]]; then
+    python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-lang-menu-ptbr.py" "${roots[@]}" || true
+  fi
+  msg_ok "Language menu icon applied"
+  if [[ -f "${i18n_dir}/apply-hello-ptbr.py" ]]; then
+    python3 "${i18n_dir}/apply-hello-ptbr.py" "${roots[@]}" || true
+  elif [[ -f "${COMMUNITY_SCRIPTS_ROOT:-}/misc/apply-hello-ptbr.py" ]]; then
+    python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-hello-ptbr.py" "${roots[@]}" || true
+  fi
+  msg_ok "Welcome banner in Portuguese"
 }
 
 setup_deb_based() {

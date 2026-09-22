@@ -15,19 +15,20 @@ def main() -> int:
         print("missing hello.html", file=sys.stderr)
         return 1
     body = src.read_text(encoding="utf-8")
-    roots = [Path(p) for p in sys.argv[1:] or ("/opt/rustdesk-api", "/opt/rustdesk", "/tmp/infra-monitor-run/api")]
+    roots = [Path(p) for p in sys.argv[1:] or ("/opt/rustdesk-api", "/opt/rustdesk", "/tmp/infra-monitor-run")]
     n = 0
     js_n = 0
     old_js = "this.replaceAdminTitle(e.data.title),this.setting.hello=e.data.hello"
     new_js = (
         'this.replaceAdminTitle(e.data.title),this.setting.hello=(e.data.hello||"")'
-        '.replace(/你好/g,"Olá").replace(/欢迎使用/g,"bem-vindo ao")'
+        '.replace(/👏+/g,"").replace(/你好/g,"Olá").replace(/欢迎使用/g,"bem-vindo ao")'
         '.replace(/RustDesk API/g,"Infra-Monitor")'
     )
     for root in roots:
         if not root.exists():
             continue
         for dest in root.rglob("hello.html"):
+            dest.unlink(missing_ok=True)
             dest.write_text(body, encoding="utf-8")
             print(f"hello {dest}")
             n += 1
@@ -40,6 +41,7 @@ def main() -> int:
                 continue
             if old_js not in text:
                 continue
+            js.unlink(missing_ok=True)
             js.write_text(text.replace(old_js, new_js, 1), encoding="utf-8")
             print(f"hello-js {js}")
             js_n += 1
