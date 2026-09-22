@@ -43,54 +43,113 @@ variables
 color
 catch_errors
 
+apply_infra_monitor_webui() {
+  msg_info "Applying Infra-Monitor WebUI (logo, pt-BR, banner)"
+  if ! command -v python3 >/dev/null 2>&1; then
+    if [[ -f /etc/alpine-release ]]; then
+      $STD apk add --no-cache python3
+    elif command -v apt-get >/dev/null 2>&1; then
+      $STD apt-get install -y -qq python3
+    fi
+  fi
+
+  local i18n_dir=""
+  if [[ -n "${COMMUNITY_SCRIPTS_ROOT:-}" && -f "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-pt-br.py" ]]; then
+    i18n_dir="${COMMUNITY_SCRIPTS_ROOT}/misc"
+  else
+    i18n_dir="$(mktemp -d)"
+    mkdir -p "${i18n_dir}/images"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-pt-br.py" -o "${i18n_dir}/apply-pt-br.py"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.json" -o "${i18n_dir}/pt_BR.json"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.toml" -o "${i18n_dir}/pt_BR.toml"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-network-logo.py" -o "${i18n_dir}/apply-network-logo.py"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/logo-webui.png" -o "${i18n_dir}/images/logo-webui.png"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-lang-menu-ptbr.py" -o "${i18n_dir}/apply-lang-menu-ptbr.py"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/idioma.jpeg" -o "${i18n_dir}/images/idioma.jpeg"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-hello-ptbr.py" -o "${i18n_dir}/apply-hello-ptbr.py"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/hello.html" -o "${i18n_dir}/hello.html"
+  fi
+
+  local -a roots=()
+  local candidate=""
+  for candidate in /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk /usr/share/rustdesk-api; do
+    [[ -d "$candidate" ]] && roots+=("$candidate")
+  done
+  if command -v systemctl >/dev/null 2>&1; then
+    candidate="$(systemctl show -p WorkingDirectory --value rustdesk-api.service 2>/dev/null || true)"
+    [[ -n "$candidate" && "$candidate" != "/" && -d "$candidate" ]] && roots+=("$candidate")
+  fi
+  if ((${#roots[@]} == 0)); then
+    msg_ok "WebUI branding skipped (path not found)"
+    return 0
+  fi
+
+  python3 "${i18n_dir}/apply-pt-br.py" "${roots[@]}" || true
+  python3 "${i18n_dir}/apply-network-logo.py" "${roots[@]}" || true
+  python3 "${i18n_dir}/apply-lang-menu-ptbr.py" "${roots[@]}" || true
+  python3 "${i18n_dir}/apply-hello-ptbr.py" "${roots[@]}" || true
+  msg_ok "WebUI branding applied (logo, pt-BR, banner)"
+}
+
+restart_rustdesk_api() {
+  if command -v systemctl >/dev/null 2>&1 && [[ -f /lib/systemd/system/rustdesk-api.service || -f /etc/systemd/system/rustdesk-api.service ]]; then
+    systemctl restart rustdesk-api || systemctl start rustdesk-api || true
+  elif command -v rc-service >/dev/null 2>&1; then
+    rc-service rustdesk-api restart || rc-service rustdesk-api start || true
+  elif command -v service >/dev/null 2>&1; then
+    service rustdesk-api restart || service rustdesk-api start || true
+  fi
+}
+
 update_deb_based() {
   if [[ ! -x /usr/bin/hbbr ]]; then
     msg_error "No ${APP} Installation Found!"
     exit
   fi
 
+  local need_server=0 need_api=0
   if check_for_gh_release "rustdesk-hbbs" "lejianwen/rustdesk-server"; then
+    need_server=1
+  fi
+  if check_for_gh_release "rustdesk-api" "lejianwen/rustdesk-api"; then
+    need_api=1
+  fi
+
+  if ((need_server || need_api)); then
     msg_info "Stopping Service"
-    systemctl stop rustdesk-hbbr
-    systemctl stop rustdesk-hbbs
-    if [[ -f /lib/systemd/system/rustdesk-api.service ]]; then
-      systemctl stop rustdesk-api
+    if ((need_server)); then
+      systemctl stop rustdesk-hbbr || true
+      systemctl stop rustdesk-hbbs || true
     fi
-    msg_info "Stopped Service"
+    systemctl stop rustdesk-api 2>/dev/null || true
+    msg_ok "Stopped Service"
 
-    fetch_and_deploy_gh_release "rustdesk-hbbr" "lejianwen/rustdesk-server" "binary" "latest" "/opt/rustdesk" "rustdesk-server-hbbr*$(arch_resolve).deb"
-    fetch_and_deploy_gh_release "rustdesk-hbbs" "lejianwen/rustdesk-server" "binary" "latest" "/opt/rustdesk" "rustdesk-server-hbbs*$(arch_resolve).deb"
-    fetch_and_deploy_gh_release "rustdesk-utils" "lejianwen/rustdesk-server" "binary" "latest" "/opt/rustdesk" "rustdesk-server-utils*$(arch_resolve).deb"
-    fetch_and_deploy_gh_release "rustdesk-api" "lejianwen/rustdesk-api" "binary" "latest" "/opt/rustdesk" "rustdesk-api-server*$(arch_resolve).deb"
-
-    if [[ -f "${COMMUNITY_SCRIPTS_ROOT:-}/misc/apply-pt-br.py" ]]; then
-      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-pt-br.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-network-logo.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-lang-menu-ptbr.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-hello-ptbr.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-    else
-      _i18n_tmp="$(mktemp -d)"
-      mkdir -p "${_i18n_tmp}/images"
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-pt-br.py" -o "${_i18n_tmp}/apply-pt-br.py"
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.json" -o "${_i18n_tmp}/pt_BR.json"
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.toml" -o "${_i18n_tmp}/pt_BR.toml"
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-network-logo.py" -o "${_i18n_tmp}/apply-network-logo.py"
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/logo-webui.png" -o "${_i18n_tmp}/images/logo-webui.png"
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-lang-menu-ptbr.py" -o "${_i18n_tmp}/apply-lang-menu-ptbr.py"
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/idioma.jpeg" -o "${_i18n_tmp}/images/idioma.jpeg"
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-hello-ptbr.py" -o "${_i18n_tmp}/apply-hello-ptbr.py"
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/hello.html" -o "${_i18n_tmp}/hello.html"
-      python3 "${_i18n_tmp}/apply-pt-br.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-      python3 "${_i18n_tmp}/apply-network-logo.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-      python3 "${_i18n_tmp}/apply-lang-menu-ptbr.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-      python3 "${_i18n_tmp}/apply-hello-ptbr.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
+    if ((need_server)); then
+      fetch_and_deploy_gh_release "rustdesk-hbbr" "lejianwen/rustdesk-server" "binary" "latest" "/opt/rustdesk" "rustdesk-server-hbbr*$(arch_resolve).deb"
+      fetch_and_deploy_gh_release "rustdesk-hbbs" "lejianwen/rustdesk-server" "binary" "latest" "/opt/rustdesk" "rustdesk-server-hbbs*$(arch_resolve).deb"
+      fetch_and_deploy_gh_release "rustdesk-utils" "lejianwen/rustdesk-server" "binary" "latest" "/opt/rustdesk" "rustdesk-server-utils*$(arch_resolve).deb"
     fi
+    if ((need_api)); then
+      fetch_and_deploy_gh_release "rustdesk-api" "lejianwen/rustdesk-api" "binary" "latest" "/opt/rustdesk" "rustdesk-api-server*$(arch_resolve).deb"
+    fi
+  fi
 
-    msg_info "Starting services"
-    systemctl start -q rustdesk-*
-    msg_ok "Services started"
+  # Branding is independent of upstream package versions (hbbs 0.1.2 can be current
+  # while the WebUI still needs logo / pt-BR / hello patches).
+  apply_infra_monitor_webui
 
+  msg_info "Starting services"
+  if ((need_server)); then
+    systemctl start rustdesk-hbbr || true
+    systemctl start rustdesk-hbbs || true
+  fi
+  restart_rustdesk_api
+  msg_ok "Services started"
+
+  if ((need_server || need_api)); then
     msg_ok "Updated successfully!"
+  else
+    msg_ok "Packages already current — WebUI branding reapplied"
   fi
 }
 
@@ -119,9 +178,9 @@ update_alpine() {
     rm -f "$temp_file1"
     msg_ok "Updated Infra-Monitor (RustDesk Server)"
   else
-    msg_ok "No update required. ${APP} is already at v${RELEASE}"
+    msg_ok "No package update. ${APP} server is already at v${RELEASE}"
   fi
-  if [ "${APIRELEASE}" != "$(cat ~/.rustdesk-api)" ] || [ ! -f ~/.rustdesk-api ]; then
+  if [ "${APIRELEASE}" != "$(cat ~/.rustdesk-api 2>/dev/null)" ] || [ ! -f ~/.rustdesk-api ]; then
     msg_info "Updating Infra-Monitor API to v${APIRELEASE}"
     $STD service rustdesk-api stop
     temp_file2=$(mktemp)
@@ -129,34 +188,15 @@ update_alpine() {
     $STD tar zxvf "$temp_file2"
     cp -r release/* /opt/rustdesk-api
     echo "${APIRELEASE}" >~/.rustdesk-api
-    if [[ -f "${COMMUNITY_SCRIPTS_ROOT:-}/misc/apply-pt-br.py" ]]; then
-      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-pt-br.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-network-logo.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-lang-menu-ptbr.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-hello-ptbr.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-    else
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-pt-br.py" -o /tmp/apply-pt-br.py
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.json" -o /tmp/pt_BR.json
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.toml" -o /tmp/pt_BR.toml
-      mkdir -p /tmp/images
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-network-logo.py" -o /tmp/apply-network-logo.py
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/logo-webui.png" -o /tmp/images/logo-webui.png
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-lang-menu-ptbr.py" -o /tmp/apply-lang-menu-ptbr.py
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/idioma.jpeg" -o /tmp/images/idioma.jpeg
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-hello-ptbr.py" -o /tmp/apply-hello-ptbr.py
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/hello.html" -o /tmp/hello.html
-      python3 /tmp/apply-pt-br.py /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-      python3 /tmp/apply-network-logo.py /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-      python3 /tmp/apply-lang-menu-ptbr.py /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-      python3 /tmp/apply-hello-ptbr.py /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
-    fi
-    $STD service rustdesk-api start
     rm -rf release
     rm -f "$temp_file2"
     msg_ok "Updated Infra-Monitor API"
   else
-    msg_ok "No update required. Infra-Monitor API is already at v${APIRELEASE}"
+    msg_ok "No package update. Infra-Monitor API is already at v${APIRELEASE}"
   fi
+
+  apply_infra_monitor_webui
+  restart_rustdesk_api
   msg_ok "Updated successfully!"
 }
 

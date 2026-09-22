@@ -25,6 +25,6 @@ if [[ ! -x /usr/bin/hbbr && ! -d /opt/rustdesk-server ]]; then
   exit 1
 fi
 
-echo "==> Atualizando Infra-Monitor (RustDesk Server + API)..."
+echo "==> Atualizando Infra-Monitor (pacotes + identidade WebUI)..."
 bash -c "$(curl -fsSL "${COMMUNITY_SCRIPTS_URL}/ct/infra-monitor.sh")"
-echo "==> Update concluído."
+echo "==> Update concluído (pacotes só mudam se houver release nova; a WebUI é reaplicada sempre)."
