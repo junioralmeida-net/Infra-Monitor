@@ -4,12 +4,20 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
 LANG_KEY = "pt-BR"
 LANG_ALIASES = ("pt-BR", "pt-br", "pt_BR", "pt")
 LANG_NAME = "Português (Brasil)"
+
+DEFAULT_ROOTS = (
+    "/var/lib/rustdesk-api",
+    "/opt/rustdesk-api",
+    "/opt/rustdesk",
+    "/usr/share/rustdesk-api",
+)
 
 
 def _balanced_object(src: str, start: int) -> int | None:
@@ -111,6 +119,57 @@ def set_config_lang(roots: list[Path]) -> None:
                 cfg.write_text(new, encoding="utf-8")
 
 
+def _unique_existing(paths: list[Path]) -> list[Path]:
+    seen: set[Path] = set()
+    out: list[Path] = []
+    for raw in paths:
+        try:
+            path = raw.resolve() if raw.exists() else raw
+        except OSError:
+            continue
+        if not path.exists() or path in seen:
+            continue
+        seen.add(path)
+        out.append(path)
+    return out
+
+
+def discover_roots(argv: list[str]) -> list[Path]:
+    candidates = [Path(p) for p in argv]
+    candidates.extend(Path(p) for p in DEFAULT_ROOTS)
+    try:
+        proc = subprocess.run(
+            ["systemctl", "show", "-p", "WorkingDirectory", "--value", "rustdesk-api.service"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=False,
+        )
+        wd = (proc.stdout or "").strip()
+        if wd and wd not in {"", "/", "n/a"}:
+            candidates.append(Path(wd))
+    except (OSError, subprocess.SubprocessError):
+        pass
+    try:
+        proc = subprocess.run(
+            ["dpkg", "-L", "rustdesk-api-server"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+        for line in proc.stdout.splitlines():
+            path = Path(line)
+            if path.name == "resources" and path.is_dir():
+                candidates.append(path.parent)
+            elif path.name == "admin" and path.is_dir():
+                parent = path.parent
+                candidates.append(parent.parent if parent.name == "resources" else parent)
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return _unique_existing(candidates)
+
+
 def main() -> int:
     here = Path(__file__).resolve().parent
     json_path = here / "pt_BR.json"
@@ -120,11 +179,10 @@ def main() -> int:
         return 1
     messages = json.loads(json_path.read_text(encoding="utf-8"))
 
-    roots = [Path(p) for p in sys.argv[1:] or ("/opt/rustdesk-api", "/opt/rustdesk")]
-    roots = [p for p in roots if p.exists()]
+    roots = discover_roots(sys.argv[1:])
     if not roots:
-        print("rustdesk-api install path not found", file=sys.stderr)
-        return 1
+        print("rustdesk-api install path not found; skipping pt-BR WebUI patch", file=sys.stderr)
+        return 0
 
     copy_backend(toml_path, roots)
     set_config_lang(roots)

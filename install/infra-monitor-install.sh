@@ -30,7 +30,21 @@ apply_webui_ptbr() {
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.toml" -o "${i18n_dir}/pt_BR.toml"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/apply-pt-br.py" -o "${i18n_dir}/apply-pt-br.py"
   fi
-  python3 "${i18n_dir}/apply-pt-br.py" /opt/rustdesk-api /opt/rustdesk
+  local -a roots=()
+  local candidate=""
+  for candidate in /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk /usr/share/rustdesk-api; do
+    [[ -d "$candidate" ]] && roots+=("$candidate")
+  done
+  if command -v systemctl >/dev/null 2>&1; then
+    candidate="$(systemctl show -p WorkingDirectory --value rustdesk-api.service 2>/dev/null || true)"
+    [[ -n "$candidate" && "$candidate" != "/" && -d "$candidate" ]] && roots+=("$candidate")
+  fi
+  if ((${#roots[@]} == 0)); then
+    echo "rustdesk-api WebUI path not found; skipping pt-BR patch"
+    msg_ok "Português (Brasil) skipped (WebUI path not found)"
+    return 0
+  fi
+  python3 "${i18n_dir}/apply-pt-br.py" "${roots[@]}" || true
   msg_ok "Português (Brasil) available in Language menu"
 }
 
