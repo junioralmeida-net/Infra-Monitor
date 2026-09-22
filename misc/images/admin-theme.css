@@ -99,27 +99,27 @@ img.lang-icon {
 
 .header-logo .logo {
   box-sizing: border-box !important;
-  width: 36px !important;
-  height: 36px !important;
-  max-width: 36px !important;
-  padding: 5px !important;
+  width: 30px !important;
+  height: 30px !important;
+  max-width: 30px !important;
+  padding: 0 !important;
   object-fit: contain !important;
-  background: linear-gradient(#d97757, #d0572f) !important;
-  border-radius: 8px !important;
+  background: transparent !important;
+  border-radius: 6px !important;
   filter: none !important;
 }
 
 .login-logo {
   box-sizing: border-box !important;
-  width: 96px !important;
-  height: 96px !important;
-  max-width: 96px !important;
-  padding: 16px !important;
+  width: 80px !important;
+  height: 80px !important;
+  max-width: 80px !important;
+  padding: 0 !important;
   object-fit: contain !important;
   margin: 0 auto 20px !important;
   display: block !important;
-  background: linear-gradient(#d97757, #d0572f) !important;
-  border-radius: 16px !important;
+  background: transparent !important;
+  border-radius: 12px !important;
   filter: none !important;
 }
 

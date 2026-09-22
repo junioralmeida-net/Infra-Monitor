@@ -29,6 +29,9 @@ apply_webui_ptbr() {
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.json" -o "${i18n_dir}/pt_BR.json"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.toml" -o "${i18n_dir}/pt_BR.toml"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-pt-br.py" -o "${i18n_dir}/apply-pt-br.py"
+    mkdir -p "${i18n_dir}/images"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-network-logo.py" -o "${i18n_dir}/apply-network-logo.py"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/logo-webui.png" -o "${i18n_dir}/images/logo-webui.png"
   fi
   local -a roots=()
   local candidate=""
@@ -46,6 +49,12 @@ apply_webui_ptbr() {
   fi
   python3 "${i18n_dir}/apply-pt-br.py" "${roots[@]}" || true
   msg_ok "Português (Brasil) available in Language menu"
+  if [[ -f "${i18n_dir}/apply-network-logo.py" ]]; then
+    python3 "${i18n_dir}/apply-network-logo.py" "${roots[@]}" || true
+  elif [[ -f "${COMMUNITY_SCRIPTS_ROOT:-}/misc/apply-network-logo.py" ]]; then
+    python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-network-logo.py" "${roots[@]}" || true
+  fi
+  msg_ok "NETWORK logo (LOGO4) applied"
 }
 
 setup_deb_based() {

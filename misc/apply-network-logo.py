@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Replace rustdesk-api WebUI logos with NETWORK LOGO4 (N mark) and size them."""
+"""Replace rustdesk-api WebUI logos with NETWORK LOGO4 on brand orange.
+
+Original rustdesk-api mark is 128x128, shown at 30px in the header and 80px
+on the login card. The composed asset (logo-webui.png) matches that size.
+"""
 from __future__ import annotations
 
 import base64
@@ -9,8 +13,9 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 LOGO_CANDIDATES = (
-    HERE.parent / "PASTA_BASE" / "LOGO4.png",
+    HERE / "images" / "logo-webui.png",
     HERE / "images" / "LOGO4.png",
+    HERE.parent / "PASTA_BASE" / "LOGO4.png",
     HERE / "images" / "logo-network-n.png",
 )
 
@@ -21,13 +26,14 @@ _HEADER_LOGO = re.compile(
 _LOGIN_LOGO = re.compile(
     r"\.login-logo\[data-v-[a-f0-9]+\]\{[^}]*\}"
 )
+# Match the upstream rustdesk-api sizes (header 30px, login 80px).
 _HEADER_RULE = (
-    ".header-logo .logo[data-v-{vid}]{{display:block;width:auto;height:32px;"
-    "max-width:36px;object-fit:contain;filter:brightness(0) invert(1)}}"
+    ".header-logo .logo[data-v-{vid}]{{display:block;width:30px;height:30px;"
+    "object-fit:contain;filter:none}}"
 )
 _LOGIN_RULE = (
-    ".login-logo[data-v-{vid}]{{width:auto;height:80px;max-width:80px;"
-    "object-fit:contain;filter:brightness(0) invert(1);margin:0 auto 20px;display:block}}"
+    ".login-logo[data-v-{vid}]{{width:80px;height:80px;margin:0 auto 20px;"
+    "display:block;object-fit:contain;filter:none}}"
 )
 
 
@@ -35,7 +41,7 @@ def _find_logo() -> Path:
     for path in LOGO_CANDIDATES:
         if path.is_file():
             return path
-    raise FileNotFoundError("LOGO4.png not found")
+    raise FileNotFoundError("NETWORK WebUI logo not found")
 
 
 def _png_data_uri(path: Path) -> str:
@@ -93,7 +99,7 @@ def main() -> int:
     roots = [
         Path(p)
         for p in sys.argv[1:]
-        or ("/opt/rustdesk-api", "/opt/rustdesk", "/tmp/infra-monitor-run/api")
+        or ("/opt/rustdesk-api", "/opt/rustdesk", "/var/lib/rustdesk-api")
     ]
     js_n = css_n = 0
     for root in roots:
@@ -101,7 +107,7 @@ def main() -> int:
             continue
         js_n += _patch_js(root, uri)
         css_n += _patch_css(root)
-    print(f"LOGO4 applied from {logo} (js {js_n}, css {css_n})")
+    print(f"LOGO4 (orange {logo.name}) applied (js {js_n}, css {css_n})")
     return 0 if js_n or css_n else 1
 
 
