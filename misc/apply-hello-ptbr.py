@@ -32,6 +32,15 @@ def main() -> int:
             dest.write_text(body, encoding="utf-8")
             print(f"hello {dest}")
             n += 1
+        for html in root.rglob("index.html"):
+            if "admin" not in str(html):
+                continue
+            ht = html.read_text(encoding="utf-8", errors="replace")
+            nt = ht.replace("Rustdesk API Admin", "Infra-Monitor").replace("RustDesk API Admin", "Infra-Monitor")
+            if nt != ht:
+                html.unlink(missing_ok=True)
+                html.write_text(nt, encoding="utf-8")
+                print(f"title {html}")
         for js in root.rglob("*.js"):
             try:
                 if js.stat().st_size > 12_000_000:
@@ -39,10 +48,20 @@ def main() -> int:
                 text = js.read_text(encoding="utf-8", errors="replace")
             except OSError:
                 continue
-            if old_js not in text:
+            changed = False
+            if old_js in text:
+                text = text.replace(old_js, new_js, 1)
+                changed = True
+            if 'title:"Rustdesk API Admin"' in text:
+                text = text.replace('title:"Rustdesk API Admin"', 'title:"Infra-Monitor"')
+                changed = True
+            if "Rustdesk API Admin" in text:
+                text = text.replace("Rustdesk API Admin", "Infra-Monitor")
+                changed = True
+            if not changed:
                 continue
             js.unlink(missing_ok=True)
-            js.write_text(text.replace(old_js, new_js, 1), encoding="utf-8")
+            js.write_text(text, encoding="utf-8")
             print(f"hello-js {js}")
             js_n += 1
     print(f"hello.html updated ({n}), web bundle(s) {js_n}")
