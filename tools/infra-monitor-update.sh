@@ -112,5 +112,5 @@ pct exec "$CTID" -- bash -c "
 echo "==> Update concluído no CT ${CTID}."
 IP="$(pct exec "$CTID" -- hostname -I 2>/dev/null | awk '{print $1}' || true)"
 if [[ -n "${IP:-}" ]]; then
-  echo "    WebUI: http://${IP}:21114"
+  echo "    WebUI: http://${IP}:21114/_admin/"
 fi

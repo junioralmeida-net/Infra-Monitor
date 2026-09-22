@@ -63,11 +63,11 @@ update_deb_based() {
     fetch_and_deploy_gh_release "rustdesk-utils" "lejianwen/rustdesk-server" "binary" "latest" "/opt/rustdesk" "rustdesk-server-utils*$(arch_resolve).deb"
     fetch_and_deploy_gh_release "rustdesk-api" "lejianwen/rustdesk-api" "binary" "latest" "/opt/rustdesk" "rustdesk-api-server*$(arch_resolve).deb"
 
-    if [[ -f "${COMMUNITY_SCRIPTS_ROOT:-}/misc/i18n/apply-pt-br.py" ]]; then
-      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/i18n/apply-pt-br.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
+    if [[ -f "${COMMUNITY_SCRIPTS_ROOT:-}/misc/apply-pt-br.py" ]]; then
+      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-pt-br.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
     else
       _i18n_tmp="$(mktemp -d)"
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/apply-pt-br.py" -o "${_i18n_tmp}/apply-pt-br.py"
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-pt-br.py" -o "${_i18n_tmp}/apply-pt-br.py"
       curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.json" -o "${_i18n_tmp}/pt_BR.json"
       curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.toml" -o "${_i18n_tmp}/pt_BR.toml"
       python3 "${_i18n_tmp}/apply-pt-br.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
@@ -116,10 +116,10 @@ update_alpine() {
     $STD tar zxvf "$temp_file2"
     cp -r release/* /opt/rustdesk-api
     echo "${APIRELEASE}" >~/.rustdesk-api
-    if [[ -f "${COMMUNITY_SCRIPTS_ROOT:-}/misc/i18n/apply-pt-br.py" ]]; then
-      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/i18n/apply-pt-br.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
+    if [[ -f "${COMMUNITY_SCRIPTS_ROOT:-}/misc/apply-pt-br.py" ]]; then
+      python3 "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-pt-br.py" /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
     else
-      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/apply-pt-br.py" -o /tmp/apply-pt-br.py
+      curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-pt-br.py" -o /tmp/apply-pt-br.py
       curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.json" -o /tmp/pt_BR.json
       curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.toml" -o /tmp/pt_BR.toml
       python3 /tmp/apply-pt-br.py /var/lib/rustdesk-api /opt/rustdesk-api /opt/rustdesk || true
@@ -163,4 +163,4 @@ description
 msg_ok "Completed successfully!\n"
 echo -e "${CREATING}${GN}${APP} setup has been successfully initialized!${CL}"
 echo -e "${INFO}${YW}Access it using the following URL:${CL}"
-echo -e "${GATEWAY}${BGN}http://${IP}:21114${CL}"
+echo -e "${GATEWAY}${BGN}http://${IP}:21114/_admin/${CL}"

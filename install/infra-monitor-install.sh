@@ -22,13 +22,13 @@ apply_webui_ptbr() {
     fi
   fi
   local i18n_dir=""
-  if [[ -n "${COMMUNITY_SCRIPTS_ROOT:-}" && -f "${COMMUNITY_SCRIPTS_ROOT}/misc/i18n/apply-pt-br.py" ]]; then
-    i18n_dir="${COMMUNITY_SCRIPTS_ROOT}/misc/i18n"
+  if [[ -n "${COMMUNITY_SCRIPTS_ROOT:-}" && -f "${COMMUNITY_SCRIPTS_ROOT}/misc/apply-pt-br.py" ]]; then
+    i18n_dir="${COMMUNITY_SCRIPTS_ROOT}/misc"
   else
     i18n_dir="$(mktemp -d)"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.json" -o "${i18n_dir}/pt_BR.json"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/pt_BR.toml" -o "${i18n_dir}/pt_BR.toml"
-    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/i18n/apply-pt-br.py" -o "${i18n_dir}/apply-pt-br.py"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-pt-br.py" -o "${i18n_dir}/apply-pt-br.py"
   fi
   local -a roots=()
   local candidate=""

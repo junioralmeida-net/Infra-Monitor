@@ -56,12 +56,12 @@ var_os='debian' bash ct/infra-monitor.sh
 
 Siga o modo **Default** ou **Advanced** e aguarde o fim da instalação.
 
-No WebUI (`:21114`), o menu de **Language** inclui **Português (Brasil)** para traduzir a interface em pt-BR.
+No WebUI (`:21114/_admin/`), o menu de **Language** inclui **Português (Brasil)** para traduzir a interface em pt-BR.
 
 ## Acesso
 
 ```text
-http://<IP-DO-LXC>:21114
+http://<IP-DO-LXC>:21114/_admin/
 ```
 
 Credenciais (Alpine): arquivo `~/rustdesk.creds` dentro do container (“Infra-Monitor WebUI (RustDesk API)”).
