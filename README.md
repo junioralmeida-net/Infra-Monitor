@@ -68,6 +68,52 @@ Credenciais (Alpine): arquivo `~/rustdesk.creds` dentro do container (“Infra-M
 
 ---
 
+## Chave pública do cliente RustDesk
+
+O cliente precisa da **chave pública** do ID Server (`hbbs`) no campo **Key** (rede). Não use o arquivo sem `.pub` — essa é a chave privada.
+
+### Onde está o arquivo
+
+Dentro do LXC, o `hbbs` grava o par em `id_ed25519` / `id_ed25519.pub` no diretório de trabalho:
+
+| Sistema no LXC | Caminho da chave pública |
+| -------------- | ------------------------ |
+| **Debian** (padrão) | `/var/lib/rustdesk-server/id_ed25519.pub` |
+| **Alpine** | `/opt/rustdesk-server/id_ed25519.pub` (cópia também em `/root/.config/rustdesk/id_ed25519.pub`) |
+
+No host Proxmox:
+
+```bash
+pct exec <CTID> -- cat /var/lib/rustdesk-server/id_ed25519.pub
+```
+
+Alpine:
+
+```bash
+pct exec <CTID> -- cat /opt/rustdesk-server/id_ed25519.pub
+```
+
+Se o arquivo não estiver nesses caminhos:
+
+```bash
+pct exec <CTID> -- sh -c 'find /var/lib/rustdesk-server /opt/rustdesk-server /root/.config/rustdesk -name id_ed25519.pub 2>/dev/null'
+```
+
+### O que preencher no cliente
+
+No RustDesk: menu **⋮** ao lado do ID → **Rede** (desbloqueie as configurações):
+
+| Campo | Valor |
+| ----- | ----- |
+| **ID Server** | `<IP-DO-LXC>:21116` |
+| **Relay Server** | `<IP-DO-LXC>:21117` |
+| **API Server** | `http://<IP-DO-LXC>:21114` |
+| **Key** | conteúdo de `id_ed25519.pub` (uma linha) |
+
+Repita a mesma configuração no cliente local e no remoto.
+
+---
+
 ## Atualização no Proxmox
 
 ### One-liner no host (recomendado)
