@@ -65,9 +65,12 @@ apply_infra_monitor_webui() {
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-network-logo.py" -o "${i18n_dir}/apply-network-logo.py"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/logo-webui.png" -o "${i18n_dir}/images/logo-webui.png"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-lang-menu-ptbr.py" -o "${i18n_dir}/apply-lang-menu-ptbr.py"
-    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/idioma.jpeg" -o "${i18n_dir}/images/idioma.jpeg"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/idioma.png" -o "${i18n_dir}/images/idioma.png"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-hello-ptbr.py" -o "${i18n_dir}/apply-hello-ptbr.py"
     curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/hello.html" -o "${i18n_dir}/hello.html"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/apply-admin-theme.py" -o "${i18n_dir}/apply-admin-theme.py"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/admin-theme.css" -o "${i18n_dir}/images/admin-theme.css"
+    curl -fsSL "${COMMUNITY_SCRIPTS_URL}/misc/images/brand-tokens.css" -o "${i18n_dir}/images/brand-tokens.css"
   fi
 
   local -a roots=()
@@ -88,7 +91,8 @@ apply_infra_monitor_webui() {
   python3 "${i18n_dir}/apply-network-logo.py" "${roots[@]}" || true
   python3 "${i18n_dir}/apply-lang-menu-ptbr.py" "${roots[@]}" || true
   python3 "${i18n_dir}/apply-hello-ptbr.py" "${roots[@]}" || true
-  msg_ok "WebUI branding applied (logo, pt-BR, banner)"
+  python3 "${i18n_dir}/apply-admin-theme.py" "${roots[@]}" || true
+  msg_ok "WebUI branding applied (logo, pt-BR, banner, tema Infra-Guardian)"
 }
 
 restart_rustdesk_api() {

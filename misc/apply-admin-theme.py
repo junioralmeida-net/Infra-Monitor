@@ -30,7 +30,7 @@ def main() -> int:
     roots = [
         Path(p)
         for p in sys.argv[1:]
-        or ("/opt/rustdesk-api", "/opt/rustdesk", "/tmp/infra-monitor-run/api")
+        or ("/opt/rustdesk-api", "/opt/rustdesk", "/tmp/infra-monitor-run")
     ]
     n = 0
     for root in roots:

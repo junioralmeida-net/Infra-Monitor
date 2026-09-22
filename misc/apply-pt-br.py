@@ -66,7 +66,7 @@ def _insert_after_object(js: str, header_re: str, payload: str) -> str:
 def _english_value_ref(js: str) -> str | None:
     """Minified bundles use unquoted `en:{name:"English",value:Z,...}`."""
     m = re.search(
-        rf"""(?:["']en["']|\ben)\s*:\s*\{{\s*name\s*:\s*["']English["']\s*,\s*value\s*:\s*({IDENT_RE})\s*,""",
+        rf"""(?:["']en["']|\ben)\s*:\s*\{{\s*name\s*:\s*["'](?:English|Inglês)["']\s*,\s*value\s*:\s*({IDENT_RE})\s*,""",
         js,
     )
     return m.group(1) if m else None
@@ -91,7 +91,7 @@ def _insert_lang_menu(js: str) -> str:
         return updated
     return _insert_after_object(
         js,
-        rf"""(?:["']en["']|\ben)\s*:\s*(?P<obj>\{{)\s*name\s*:\s*["']English["']""",
+        rf"""(?:["']en["']|\ben)\s*:\s*(?P<obj>\{{)\s*name\s*:\s*["'](?:English|Inglês)["']""",
         entry,
     )
 
@@ -113,15 +113,25 @@ def _insert_translations(js: str, messages: dict) -> str:
     return _insert_after_object(js, r"""["']es["']\s*:\s*(?P<obj>\{)\s*Login\s*:""", payload)
 
 
+def _force_default_lang(js: str) -> str:
+    """Use pt-BR unless the user already picked a language that exists in the menu."""
+    old = 'localStorage.getItem("lang")||navigator.language||"zh-CN"'
+    new = (
+        '(localStorage.getItem("lang")&&g[localStorage.getItem("lang")]'
+        '?localStorage.getItem("lang"):"pt-BR")'
+    )
+    return js.replace(old, new)
+
 def patch_js(path: Path, messages: dict) -> bool:
     original = path.read_text(encoding="utf-8", errors="replace")
-    updated = _insert_translations(_insert_lang_menu(original), messages)
+    updated = _force_default_lang(_insert_translations(_insert_lang_menu(original), messages))
     if updated == original:
         return False
     # Guard: the old fallback `value:en` crashes the SPA at module load.
     if re.search(r'["\']pt-BR["\']\s*:\s*\{\s*name\s*:[^}]*\bvalue:en\s*,', updated):
         print(f"skip unsafe pt-BR menu patch in {path}", file=sys.stderr)
         return False
+    path.unlink(missing_ok=True)
     path.write_text(updated, encoding="utf-8")
     return True
 

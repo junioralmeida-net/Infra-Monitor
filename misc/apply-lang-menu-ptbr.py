@@ -30,12 +30,12 @@ _LANG_SVG = re.compile(
     r'width:"1\.2em",height:"1\.2em"\},\[h\("path",\{fill:"currentColor",d:"[^"]+"\}\)\]\)'
 )
 _LANG_IMG = (
-    'h("img",{src:"/_admin/static/png/idioma.jpeg",alt:"Idioma",class:"lang-icon",'
+    'h("img",{src:"/_admin/static/png/idioma.png",alt:"Idioma",class:"lang-icon",'
     'style:{width:"24px",height:"24px",display:"block","object-fit":"contain"}})'
 )
 _ICON_SRC = (
-    Path(__file__).resolve().parent / "images" / "idioma.jpeg",
-    Path(__file__).resolve().parent.parent / "PASTA_BASE" / "idioma.jpeg",
+    Path(__file__).resolve().parent / "images" / "idioma.png",
+    Path(__file__).resolve().parent.parent / "PASTA_BASE" / "idioma.png",
 )
 
 
@@ -44,7 +44,8 @@ def _replace_names(text: str) -> str:
 
 
 def _replace_icon(text: str) -> str:
-    if "idioma.jpeg" in text and "lang-icon" in text:
+    text = text.replace("idioma.jpeg", "idioma.png")
+    if "idioma.png" in text and "lang-icon" in text:
         return text
     updated, n = _LANG_ICON.subn(_LANG_IMG, text, count=1)
     if n:
@@ -62,7 +63,7 @@ def _copy_icon(root: Path) -> bool:
             continue
         dest_dir = admin.parent / "static" / "png"
         dest_dir.mkdir(parents=True, exist_ok=True)
-        dest = dest_dir / "idioma.jpeg"
+        dest = dest_dir / "idioma.png"
         dest.write_bytes(src.read_bytes())
         print(f"lang-icon {dest}")
         n += 1

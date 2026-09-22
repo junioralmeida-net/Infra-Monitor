@@ -1,4 +1,4 @@
-/* Infra-Monitor WebUI — padrão Infra-Guardian / NETWORK
+/* Infra-Monitor WebUI — padrão Infra-Guardian
    Tokens: PASTA_BASE/IdentidadeVisual.png + brand-tokens.css
 */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap");
@@ -7,82 +7,80 @@
 html,
 :root,
 #app {
-  --el-color-primary: #d0572f !important;
-  --el-color-primary-light-3: #d97757;
-  --el-color-primary-light-5: #e0a08a;
-  --el-color-primary-light-7: #edc4b6;
-  --el-color-primary-light-8: #f3d6cc;
-  --el-color-primary-light-9: #f8e8e2;
-  --el-color-primary-dark-2: #a84626;
-  --el-color-success: #29e0a9;
-  --el-color-warning: #d97757;
-  --el-color-danger: #c63131;
-  --el-color-error: #c63131;
-  --el-color-info: #4b73ff;
-  --el-bg-color: #1a1a1a;
-  --el-bg-color-page: #1a1a1a;
-  --el-bg-color-overlay: #191917;
-  --el-fill-color: #262624;
-  --el-fill-color-light: #222220;
-  --el-fill-color-lighter: #1f1f1d;
-  --el-fill-color-extra-light: #1c1c1a;
-  --el-fill-color-blank: #191917;
-  --el-text-color-primary: #f5f5f5;
-  --el-text-color-regular: #d8d8d8;
-  --el-text-color-secondary: #b8b8b8;
-  --el-text-color-placeholder: #616161;
-  --el-border-color: rgba(245, 245, 245, 0.12);
-  --el-border-color-light: rgba(245, 245, 245, 0.1);
-  --el-border-color-lighter: rgba(245, 245, 245, 0.08);
-  --el-border-color-extra-light: rgba(245, 245, 245, 0.06);
-  --el-mask-color: rgba(26, 26, 26, 0.72);
-  --el-box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  --el-color-primary: #e46000 !important;
+  --el-color-primary-light-3: #f08000;
+  --el-color-primary-light-5: #f6ad26;
+  --el-color-primary-light-7: #f6bb34;
+  --el-color-primary-light-8: #f8d48a;
+  --el-color-primary-light-9: #fbe8c4;
+  --el-color-primary-dark-2: #b85209;
+  --el-color-success: #00d99c;
+  --el-color-warning: #f6bb34;
+  --el-color-danger: #c63e4d;
+  --el-color-error: #c63e4d;
+  --el-color-info: #689af8;
+  --el-bg-color: #0e131f;
+  --el-bg-color-page: #0e131f;
+  --el-bg-color-overlay: #181e2b;
+  --el-fill-color: #1a202e;
+  --el-fill-color-light: #181e2b;
+  --el-fill-color-lighter: #161c2a;
+  --el-fill-color-extra-light: #121826;
+  --el-fill-color-blank: #181e2b;
+  --el-text-color-primary: #f0f2f5;
+  --el-text-color-regular: #989eab;
+  --el-text-color-secondary: #787e8b;
+  --el-text-color-placeholder: #585e6b;
+  --el-border-color: rgba(240, 242, 245, 0.12);
+  --el-border-color-light: rgba(240, 242, 245, 0.10);
+  --el-border-color-lighter: rgba(240, 242, 245, 0.08);
+  --el-border-color-extra-light: rgba(240, 242, 245, 0.06);
+  --el-mask-color: rgba(14, 19, 31, 0.72);
+  --el-box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
   --el-font-family: "Inter", system-ui, sans-serif;
 }
 
 html,
 body,
 #app {
-  background: #1a1a1a !important;
-  color: #f5f5f5;
+  background: #0e131f !important;
+  color: #f0f2f5;
   font-family: "Inter", system-ui, sans-serif;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #d97757, #d0572f);
-  z-index: 4000;
 }
 
 .app-header,
 .el-header.app-header {
-  background: #1a1a1a !important;
-  color: #f5f5f5 !important;
-  border-bottom: 1px solid rgba(245, 245, 245, 0.08) !important;
+  background: #e46000 !important;
+  color: #f0f2f5 !important;
+  border-bottom: none !important;
   height: 56px !important;
+}
+
+.app-header .header-logo .title,
+.app-header .setting .title,
+.app-header .setting .nickname,
+.app-header .el-icon,
+.app-header .el-tooltip__trigger,
+.app-header span {
+  color: #f0f2f5 !important;
 }
 
 .app-left,
 .el-aside.app-left,
 .scroll-sidebar,
 .el-menu.menus {
-  background: #141414 !important;
-  border-right: 1px solid rgba(245, 245, 245, 0.08) !important;
+  background: #181e2b !important;
+  border-right: 1px solid rgba(240, 242, 245, 0.08) !important;
 }
 
 .app-container,
 .el-main,
 .el-container {
-  background: #1a1a1a !important;
+  background: #0e131f !important;
 }
 
 .header-logo .title {
-  color: #f5f5f5 !important;
+  color: #f0f2f5 !important;
   font-family: "Outfit", "Inter", sans-serif !important;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -94,7 +92,8 @@ img.lang-icon {
   height: 24px !important;
   display: block !important;
   object-fit: contain !important;
-  filter: invert(1);
+  filter: none;
+  background: transparent !important;
 }
 
 .header-logo .logo {
@@ -130,39 +129,39 @@ img.lang-icon {
 
 .el-menu-item,
 .el-sub-menu__title {
-  color: #d8d8d8 !important;
+  color: #989eab !important;
   background: transparent !important;
 }
 
 .el-menu-item:hover,
 .el-sub-menu__title:hover {
-  background: rgba(208, 87, 47, 0.12) !important;
-  color: #f5f5f5 !important;
+  background: rgba(228, 96, 0, 0.14) !important;
+  color: #f0f2f5 !important;
 }
 
 .el-menu-item.is-active {
-  background: rgba(208, 87, 47, 0.16) !important;
-  color: #d0572f !important;
-  border-right: 2px solid #d0572f;
+  background: rgba(228, 96, 0, 0.18) !important;
+  color: #e46000 !important;
+  border-right: 2px solid #e46000;
 }
 
 .el-sub-menu.is-active > .el-sub-menu__title {
-  color: #f5f5f5 !important;
+  color: #f0f2f5 !important;
 }
 
 .header-tags,
 .el-tabs__nav,
 .el-tabs__item {
-  background: #1a1a1a;
-  color: #d8d8d8;
+  background: #0e131f;
+  color: #989eab;
 }
 
 .el-tabs__item.is-active {
-  color: #d0572f !important;
+  color: #e46000 !important;
 }
 
 .el-tabs__active-bar {
-  background-color: #d0572f !important;
+  background-color: #e46000 !important;
 }
 
 .el-card,
@@ -170,43 +169,102 @@ img.lang-icon {
 .el-table tr,
 .el-table th.el-table__cell,
 .el-table td.el-table__cell {
-  background: #191917 !important;
-  color: #f5f5f5 !important;
-  border-color: rgba(245, 245, 245, 0.1) !important;
+  background: #181e2b !important;
+  color: #f0f2f5 !important;
+  border-color: rgba(240, 242, 245, 0.10) !important;
 }
 
 .el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell {
-  background: #262624 !important;
+  background: #1a202e !important;
 }
 
 .el-button--primary {
-  --el-button-bg-color: #d0572f;
-  --el-button-border-color: #d0572f;
-  --el-button-hover-bg-color: #d97757;
-  --el-button-hover-border-color: #d97757;
-  --el-button-active-bg-color: #a84626;
+  --el-button-bg-color: #e46000;
+  --el-button-border-color: #e46000;
+  --el-button-hover-bg-color: #f08000;
+  --el-button-hover-border-color: #f08000;
+  --el-button-active-bg-color: #b85209;
 }
 
 .el-button--danger {
-  --el-button-bg-color: #c63131;
-  --el-button-border-color: #c63131;
+  --el-button-bg-color: #c63e4d;
+  --el-button-border-color: #c63e4d;
 }
 
 .el-switch.is-checked .el-switch__core {
-  background-color: #d0572f !important;
-  border-color: #d0572f !important;
+  background-color: #e46000 !important;
+  border-color: #e46000 !important;
+}
+
+/* Header .setting: controles brancos sobre a barra laranja */
+.app-header .setting {
+  --el-switch-on-color: rgba(255, 255, 255, 0.28);
+  --el-switch-off-color: rgba(14, 19, 31, 0.28);
+  color: #ffffff !important;
+}
+
+.app-header .setting .menu-item {
+  color: #ffffff !important;
+}
+
+.app-header .setting .title,
+.app-header .setting .nickname,
+.app-header .setting span,
+.app-header .setting .el-icon,
+.app-header .setting .el-tooltip__trigger {
+  color: #ffffff !important;
+}
+
+.app-header .setting .el-dropdown .title:has(.lang-icon),
+.app-header .setting .el-dropdown .title:has(.lang-icon):hover,
+.app-header .setting .el-icon:has(.lang-icon) {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0;
+}
+
+.app-header .setting .el-dropdown .title:not(:has(.lang-icon)) {
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.app-header .setting .el-dropdown .title:not(:has(.lang-icon)):hover,
+.app-header .setting .el-dropdown:hover .title:not(:has(.lang-icon)) {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.app-header .setting .el-switch .el-switch__core {
+  background: rgba(255, 255, 255, 0.28) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.app-header .setting .el-switch .el-switch__action {
+  background: #ffffff !important;
+  color: #e46000 !important;
+}
+
+.app-header .setting .el-switch .el-icon,
+.app-header .setting .el-switch .el-icon svg,
+.app-header .setting .el-switch .el-icon path {
+  color: #e46000 !important;
+  fill: #e46000 !important;
+}
+
+.app-header .setting img.lang-icon {
+  filter: none !important;
+  background: transparent !important;
 }
 
 .el-input__wrapper,
 .el-textarea__inner,
 .el-select__wrapper {
-  background: #191917 !important;
-  box-shadow: 0 0 0 1px rgba(245, 245, 245, 0.12) inset !important;
+  background: #181e2b !important;
+  box-shadow: 0 0 0 1px rgba(240, 242, 245, 0.12) inset !important;
 }
 
 .el-input__inner,
 .el-textarea__inner {
-  color: #f5f5f5 !important;
+  color: #f0f2f5 !important;
 }
 
 .el-dialog,
@@ -214,73 +272,73 @@ img.lang-icon {
 .el-popper,
 .el-select-dropdown,
 .el-picker-panel {
-  background: #191917 !important;
-  border: 1px solid rgba(245, 245, 245, 0.1) !important;
-  color: #f5f5f5 !important;
+  background: #181e2b !important;
+  border: 1px solid rgba(240, 242, 245, 0.10) !important;
+  color: #f0f2f5 !important;
 }
 
 .el-dropdown-menu__item {
-  color: #d8d8d8 !important;
+  color: #989eab !important;
 }
 
 .el-dropdown-menu__item:hover,
 .el-dropdown-menu__item:focus {
-  background: rgba(208, 87, 47, 0.14) !important;
-  color: #f5f5f5 !important;
+  background: rgba(228, 96, 0, 0.16) !important;
+  color: #f0f2f5 !important;
 }
 
 .el-pagination button,
 .el-pager li {
-  background: #191917 !important;
-  color: #d8d8d8 !important;
+  background: #181e2b !important;
+  color: #989eab !important;
 }
 
 .el-pager li.is-active {
-  color: #d0572f !important;
+  color: #e46000 !important;
 }
 
 .login-container {
-  background: #1a1a1a !important;
+  background: #0e131f !important;
 }
 
 .login-card {
-  background: #191917 !important;
-  border: 1px solid rgba(245, 245, 245, 0.1);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  background: #181e2b !important;
+  border: 1px solid rgba(240, 242, 245, 0.10);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
 }
 
 .login-card h1,
 .el-form-item__label {
-  color: #f5f5f5 !important;
+  color: #f0f2f5 !important;
 }
 
 .setting .title,
 .setting .nickname {
-  color: #f5f5f5 !important;
+  color: #f0f2f5 !important;
 }
 
 a,
 .el-link,
 .el-link.is-underline {
-  color: #4b73ff !important;
+  color: #689af8 !important;
 }
 
 a:hover,
 .el-link:hover {
-  color: #d97757 !important;
+  color: #f08000 !important;
 }
 
 .el-tag {
-  --el-tag-bg-color: #262624;
-  --el-tag-border-color: rgba(245, 245, 245, 0.12);
-  --el-tag-text-color: #f5f5f5;
+  --el-tag-bg-color: #1a202e;
+  --el-tag-border-color: rgba(240, 242, 245, 0.12);
+  --el-tag-text-color: #f0f2f5;
 }
 
 .header-tags .tag.is-active,
 .header-tags .el-tag--plain {
-  border-bottom: 2px solid #d0572f;
+  border-bottom: 2px solid #e46000;
 }
 
 .el-form-item__label {
-  color: #d8d8d8 !important;
+  color: #989eab !important;
 }
